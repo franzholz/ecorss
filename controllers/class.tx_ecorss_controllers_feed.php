@@ -24,7 +24,7 @@
 /**
  * Plugin 'RSS Services' for the 'ecorss' extension.
  *
- * $Id: class.tx_ecorss_controllers_feed.php 52381 2011-09-22 05:21:00Z fab1en $
+ * $Id$
  *
  * @author	Fabien Udriot <fabien.udriot@ecodev.ch>
  * @package TYPO3
