@@ -1,0 +1,51 @@
+16-03-15 Franz Holzinger <franz@ttproducts.de>
+	* based on div2007 instead of div and lib
+
+09-12-09 Fabien Udriot <fabien.udriot@ecodev.ch>
+	* Added configuration key: "baseUrl"
+
+09-12-09 Fabien Udriot <fabien.udriot@ecodev.ch>
+	* Added 2 configuration keys: "additionalPids" and "additionalSQL". Useful in tt_news context.
+	* Added tt_news example
+	* Fixed small bugs
+	* Updated documentation
+
+01-12-09 Fabien Udriot <fabien.udriot@ecodev.ch>
+	* Fixed problem for user-configured table
+	* Added extraFields configuration
+	* Added htmlspecialchars on URL
+	* Documentation updated
+
+27-04-09 Fabien Udriot <fabien.udriot@ecodev.ch>
+	* added tidy option for clearing the feed and make it XML compliant.
+	* added author field thanks to Alexandre Morel <alexandre.morel@arcantel.ch>
+
+01-04-09 Fabien Udriot <fabien.udriot@ecodev.ch>
+	* fixed bug with big database thanks to Alexandre Morel <alexandre.morel@arcantel.ch>
+	* Corrected absolute URL (displays now images)
+	* added clear_cache parameter (clear_cache=1)
+	* added configuration truncate (truncate=300 tells to shorten the summary up to 300 characters, thanks to Alexandre Morel <alexandre.morel@arcantel.ch>)
+	* added configuration where (where = AND myField = 'myValue')
+	* updated documentation
+	* improved Atom validation
+
+24-04-08 Fabien Udriot <fabien.udriot@ecodev.ch>
+	* document update
+	* cache configuration enhancement
+
+22-04-08 Xavier Perseguers <xavier@perseguers.ch>
+	* added caching mechanism
+	* removed protected pages from feeds
+	* fixed back URL for feed whose content does not come from table tt_content
+
+20-03-08 Xavier Perseguers <xavier@perseguers.ch>
+	* added retrieval and use of page author's name/email
+
+20-02-08 Xavier Perseguers <xavier@perseguers.ch>
+	* added support for multilingual feeds
+
+18-02-08 Xavier Perseguers <xavier@perseguers.ch>
+	* fixed PHP warning bugs
+
+19-05-07 Fabien Udriot  <fabien.udriot@ecodev.ch>
+	* first day, kick off in Torgon ;)
