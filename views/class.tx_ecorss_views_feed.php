@@ -24,8 +24,6 @@
 /**
  * Plugin 'RSS services' for the 'ecorss' extension.
  *
- * $Id$
- *
  * @author	Fabien Udriot <fabien.udriot@ecodev.ch>
  * @package TYPO3
  * @subpackage ecorss
@@ -53,7 +51,7 @@ class tx_ecorss_views_feed extends tx_div2007_phpTemplateEngine {
 	/**
 	 * Print the feed's summary.
 	 */
-	function printSummary() {
+	public function printSummary() {
 		// thanks to Marius Mühlberger <mm@co-operation.de> for the regular expressions
 		// Remove script-tags with content
 		$pattern[] = '/<( *)script([^>]*)type( *)=( *)([^>]*)>(.*)<\/( *)script( *)>/isU';
@@ -88,7 +86,7 @@ class tx_ecorss_views_feed extends tx_div2007_phpTemplateEngine {
 	/**
 	 * Print the current url of the page.
 	 */
-	function printUrl() {
+	public function printUrl() {
 		print $this->printAsRaw('host');
 		$url = $this->asText('url');
 		$pattern[] = '/\?clear_cache=1/isU';

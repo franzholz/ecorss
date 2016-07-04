@@ -1,3 +1,6 @@
+04-07-16 Franz Holzinger <franz@ttproducts.de>
+	* bugfix for TYPO3 6.2: Use the CacheManager
+
 16-03-15 Franz Holzinger <franz@ttproducts.de>
 	* based on div2007 instead of div and lib
 

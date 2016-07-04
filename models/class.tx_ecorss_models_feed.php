@@ -24,8 +24,6 @@
 /**
  * Plugin 'RSS Services' for the 'ecorss' extension.
  *
- * $Id$
- *
  * @author	Fabien Udriot <fabien.udriot@ecodev.ch>
  * @author  Xavier Perseguers <xavier@perseguers.ch>
  * @package TYPO3
@@ -367,7 +365,7 @@ class tx_ecorss_models_feed extends tx_div2007_object {
 	 * @access	private
 	 * @return	array		Array of all pid being children of <tt>$pid</tt>
 	 */
-	function getAllPages($pid, &$arrayOfPid = array()) {
+	public function getAllPages($pid, &$arrayOfPid = array()) {
 		$pages = tx_div2007::db()->exec_SELECTgetRows('uid','pages','deleted = 0 AND hidden = 0 AND pid='.$pid);
 		$arrayOfPid = array_merge($pages,$arrayOfPid);
 		if (count($pages) > 0) {
@@ -388,7 +386,7 @@ class tx_ecorss_models_feed extends tx_div2007_object {
 	 * @access	private
 	 * @return	string		Closest header for the given element
 	 */
-	function updateClosestTitle(&$row, $clauseSQL, $sysLanguageUid = null) {
+	public function updateClosestTitle(&$row, $clauseSQL, $sysLanguageUid = null) {
 		$clauseSQL .= ' AND pid='.$row['pid'].' AND sorting < (SELECT sorting FROM tt_content WHERE uid='.$row['uid'].') AND header != \'\'';
 		$result = tx_div2007::db()->exec_SELECTquery('header','tt_content',$clauseSQL,'','sorting DESC',1);
 		if ($result) {
@@ -424,7 +422,7 @@ class tx_ecorss_models_feed extends tx_div2007_object {
 	 * @param	integer		$sysLanguageUid: <tt>sys_language_uid</tt> when used in a multilingual context
 	 * @return	array		author name and email
 	 */
-	function getAuthor(&$row, $sysLanguageUid = null) {
+	public function getAuthor(&$row, $sysLanguageUid = null) {
 		$author = $author_email = '';
 
 		$clauseSQL = 'uid='.$row['pid'];
@@ -451,11 +449,11 @@ class tx_ecorss_models_feed extends tx_div2007_object {
 	 * @param	integer		$pid: page id to be tested
 	 * @return	boolean		true if the page should not be disclosed to everybody
 	 */
-	function isPageProtected($pid) {
-		$clauseSQL = 'uid='.$pid;
+	public function isPageProtected($pid) {
+		$clauseSQL = 'uid=' . $pid;
 		$table = 'pages';
 
-		$result = tx_div2007::db()->exec_SELECTquery('perms_everybody',$table,$clauseSQL);
+		$result = tx_div2007::db()->exec_SELECTquery('perms_everybody', $table, $clauseSQL);
 		if ($result) {
 			$row = tx_div2007::db()->sql_fetch_assoc($result);
 			return !($row['perms_everybody'] == 0 || $row['perms_everybody'] & 1);

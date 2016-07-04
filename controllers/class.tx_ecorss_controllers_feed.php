@@ -24,8 +24,6 @@
 /**
  * Plugin 'RSS Services' for the 'ecorss' extension.
  *
- * $Id$
- *
  * @author	Fabien Udriot <fabien.udriot@ecodev.ch>
  * @package TYPO3
  * @subpackage ecorss
@@ -45,7 +43,7 @@
  */
 class tx_ecorss_controllers_feed extends tx_div2007_controller {
 
-	var $defaultAction = 'default';
+	public $defaultAction = 'default';
 
 	/**
 	 * Add a feed to the HTML header. Typically it is a link like <link rel="alternate" type="application/atom+xml" title="..." href="..." />
@@ -107,7 +105,7 @@ class tx_ecorss_controllers_feed extends tx_div2007_controller {
 	public function display($content, $configurations) {
 		$TSconfig = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_ecorss.']['controller.']['feed.'];
 		if($TSconfig === null){
-			die('<h1>You died:</h1> You forgot to include static templates "ecorss" in your root template in onglet "Includes"');
+			die('<h1>You died:</h1> You forgot to include the static template "ecorss" in your root template in onglet "Includes"');
 		}
 		$TSconfig['configurations.'] = array_merge($TSconfig['configurations.'], $configurations);
 		$content = $this->main(null, $TSconfig);
@@ -120,26 +118,49 @@ class tx_ecorss_controllers_feed extends tx_div2007_controller {
 	 * @access	public
 	 */
 	public function defaultAction() {
+		$cacheContent = null;
+
 		// Cache mechanism
+		if (version_compare(TYPO3_version, '6.2.0', '>=')) {
+			$cacheFrontend = t3lib_div::makeInstance('TYPO3\\CMS\\Core\\Cache\\CacheManager')->getCache('cache_hash');
+		}
+
 		$hash = md5(serialize($this->configurations) . $GLOBALS['TSFE']->type);
-		$cacheId = 'Ecorss feed: ' . $GLOBALS['TSFE']->type;
+		$cacheId = 'Ecorss-Feed-' . $GLOBALS['TSFE']->type;
 		if(!isset($this->configurations['cache_period'])){
 			$this->configurations['cache_period'] = 3600;
 		}
-		// Clear the cach whenever special paramerter are given
-		if(isset($this->parameters['clear_cache']) || t3lib_div::_GP('clear_cache') == 1){
-			$GLOBALS['TYPO3_DB']->exec_DELETEquery('cache_hash', 'ident = "' . $cacheId . '"');
+		// Clear the cache whenever special parameters are given
+		if(
+			isset($this->parameters['clear_cache']) ||
+			t3lib_div::_GP('clear_cache') == 1
+		){
+			if (isset($cacheFrontend) && is_object($cacheFrontend)) {
+				$cacheFrontend->flushByTag($cacheId);
+			} else {
+				$GLOBALS['TYPO3_DB']->exec_DELETEquery(
+					'cache_hash',
+					'ident=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($cacheId, 'cache_hash')
+				);
+			}
 		}
 
-		$cacheContent = $GLOBALS['TSFE']->sys_page->getHash($hash, $this->configurations['cache_period']);
+		if (isset($cacheFrontend) && is_object($cacheFrontend)) {
+			$cacheContent = $cacheFrontend->get($hash);
+		} else {
+			$cacheContent =
+				$GLOBALS['TSFE']->sys_page->getHash(
+					$hash,
+					$this->configurations['cache_period']
+				);
+		}
 		/*
 		 * true, when the content is hold in the cache system
 		 * false, when the cache has expired or no cache is present
 		 */
 		if ($cacheContent !== null) {
 			$output = $cacheContent;
-		}
-		else{
+		} else {
 			// Finding classnames
 			$model = t3lib_div::makeInstance('tx_ecorss_models_feed', $this);
 			$model['title'] = $this->configurations['title'];
@@ -175,8 +196,18 @@ class tx_ecorss_controllers_feed extends tx_div2007_controller {
 			$output = '<?xml version="1.0" encoding="'.$encoding.'"?>'.chr(10);
 			$output .= $view->render($template);
 
-			// Cache the feed
-			$GLOBALS['TSFE']->sys_page->storeHash($hash, $output, $cacheId);
+			if (isset($cacheFrontend) && is_object($cacheFrontend)) {
+				$cacheContent =
+					$cacheFrontend->set(
+						$hash,
+						$output,
+						array($cacheId),
+						$this->configurations['cache_period']
+					);
+			} else {
+				// Cache the feed
+				$GLOBALS['TSFE']->sys_page->storeHash($hash, $output, $cacheId);
+			}
 		}
 
 #		if ($this->configurations['tidy']) {
@@ -222,4 +253,3 @@ class tx_ecorss_controllers_feed extends tx_div2007_controller {
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/ecorss/controllers/class.tx_ecorss_controllers_feed.php']) {
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/ecorss/controllers/class.tx_ecorss_controllers_feed.php']);
 }
-?>
