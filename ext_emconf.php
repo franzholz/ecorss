@@ -15,7 +15,7 @@ $EM_CONF[$_EXTKEY] = array(
 	'description' => 'Generate easily RSS / ATOM feeds based on the latest content of any tables in the database. Can deal with flexform content and multilingual / multidomain websites.',
 	'category' => 'fe',
 	'shy' => 0,
-	'version' => '1.0.0',
+	'version' => '1.0.1',
 	'dependencies' => 'div2007',
 	'conflicts' => '',
 	'priority' => '',
@@ -34,6 +34,7 @@ $EM_CONF[$_EXTKEY] = array(
 	'CGLcompliance_note' => '',
 	'constraints' => array(
 		'depends' => array(
+			'php' => '5.3.0-7.99.99',
 			'typo3' => '4.5.0-6.2.99',
 			'div2007' => '1.2.0-0.0.0',
 		),
