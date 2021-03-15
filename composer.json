@@ -1,0 +1,45 @@
+{
+  "name": "jambagecom/ecorss",
+  "type": "typo3-cms-extension",
+  "description": "Ecodev : feeds services (RSS / ATOM)",
+  "keywords": [
+    "TYPO3",
+    "extension",
+    "RSS",
+    "feed"
+  ],
+  "support": {
+    "issues": "https://github.com/franzholz/ecorss/issues"
+  },
+  "homepage": "https://jambage.com",
+  "authors": [
+    {
+      "name": "Franz Holzinger",
+      "role": "Developer",
+      "homepage": "https://ttproducts.de"
+    }
+  ],
+  "license": [
+    "GPL-2.0-or-later"
+  ],
+  "require": {
+    "php": "^7.1",
+    "typo3/cms-core": "^9.5,^10.4",
+    "jambagecom/div2007": "^1.11.5"
+  },
+  "autoload": {
+    "classmap": [
+      "controllers",
+      "models",
+      "views"
+    ]
+  },
+  "replace": {
+    "jambagecom/ecorss": "self.version"
+  },
+  "extra": {
+    "typo3/cms": {
+      "extension-key": "ecorss"
+    }
+  }
+}
