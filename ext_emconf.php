@@ -2,50 +2,29 @@
 
 ########################################################################
 # Extension Manager/Repository config file for ext "ecorss".
-#
-# Auto generated 11-10-2010 16:28
-#
-# Manual updates:
-# Only the data in the array - everything else is removed by next
-# writing. "version" and "dependencies" must not be touched!
 ########################################################################
 
 $EM_CONF[$_EXTKEY] = array(
-	'title' => 'Ecodev : feeds services (RSS / ATOM)',
-	'description' => 'Generate easily RSS / ATOM feeds based on the latest content of any tables in the database. Can deal with flexform content and multilingual / multidomain websites.',
-	'category' => 'fe',
-	'shy' => 0,
-	'version' => '1.0.1',
-	'dependencies' => 'div2007',
-	'conflicts' => '',
-	'priority' => '',
-	'loadOrder' => '',
-	'module' => '',
-	'state' => 'stable',
-	'uploadfolder' => 0,
-	'createDirs' => '',
-	'modify_tables' => '',
-	'clearcacheonload' => 0,
-	'lockType' => '',
-	'author' => 'Franz Holzinger',
-	'author_email' => 'franz@ttproducts.de',
-	'author_company' => 'jambage.com',
-	'CGLcompliance' => '',
-	'CGLcompliance_note' => '',
-	'constraints' => array(
-		'depends' => array(
-			'php' => '5.3.0-7.99.99',
-			'typo3' => '4.5.0-6.2.99',
-			'div2007' => '1.2.0-0.0.0',
-		),
-		'conflicts' => array(
-		),
-		'suggests' => array(
-		),
-	),
-	'_md5_values_when_last_written' => 'a:18:{s:13:"ChangeLog.txt";s:4:"6d1b";s:12:"ext_icon.gif";s:4:"e0fc";s:12:"ext_icon.png";s:4:"4de9";s:17:"ext_localconf.php";s:4:"806c";s:14:"ext_tables.php";s:4:"eb65";s:14:"ext_tables.sql";s:4:"b53c";s:30:"icon_tx_ecobox_publication.png";s:4:"655f";s:13:"locallang.xml";s:4:"0073";s:16:"locallang_db.xml";s:4:"8c4a";s:28:"configurations/constants.txt";s:4:"82c7";s:24:"configurations/setup.txt";s:4:"e94b";s:48:"controllers/class.tx_ecorss_controllers_feed.php";s:4:"05f8";s:14:"doc/manual.pdf";s:4:"5d3d";s:14:"doc/manual.sxw";s:4:"bdd0";s:38:"models/class.tx_ecorss_models_feed.php";s:4:"1ddf";s:18:"templates/atom.php";s:4:"98df";s:17:"templates/rss.php";s:4:"9947";s:36:"views/class.tx_ecorss_views_feed.php";s:4:"5638";}',
-	'suggests' => array(
-	),
+    'title' => 'Ecodev : feeds services (RSS / ATOM)',
+    'description' => 'Generate easily RSS / ATOM feeds based on the latest content of any tables in the database. Can deal with flexform content and multilingual / multidomain websites.',
+    'category' => 'fe',
+    'version' => '1.1.0',
+    'dependencies' => 'div2007',
+    'state' => 'stable',
+    'clearcacheonload' => 0,
+    'author' => 'Franz Holzinger',
+    'author_email' => 'franz@ttproducts.de',
+    'author_company' => 'jambage.com',
+    'constraints' => array(
+        'depends' => array(
+            'php' => '7.0.0-7.99.99',
+            'typo3' => '9.5.0-10.4.99',
+            'div2007' => '1.11.5-0.0.0',
+        ),
+        'conflicts' => array(
+        ),
+        'suggests' => array(
+        ),
+    ),
 );
 
-?>
