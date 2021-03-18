@@ -1,4 +1,7 @@
 <?php
+
+namespace JambageCom\Ecorss\View;
+
 /***************************************************************
  *	Copyright notice
  *
@@ -28,32 +31,32 @@
  * @package TYPO3
  * @subpackage ecorss
  */
-/**
- * [CLASS/FUNCTION INDEX of SCRIPT]
- *
- *   44: class tx_ecorss_views_feed extends tx_div2007_phpTemplateEngine
- *   49:     function printSummary()
- *   58:     function printUrl()
- *
- * TOTAL FUNCTIONS: 2
- * (This index is automatically created/updated by the extension "extdeveval")
- *
- */
 
-if (!class_exists('tx_div2007_phpTemplateEngine')) {
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-	require_once (PATH_BE_DIV2007 . 'class.tx_div2007_viewBase.php');
-	require_once (PATH_BE_DIV2007 . 'class.tx_div2007_phpTemplateEngine.php');
-}
+use JambageCom\Div2007\Utility\FrontendUtility;
 
-class tx_ecorss_views_feed extends tx_div2007_phpTemplateEngine {
+class View implements \TYPO3\CMS\Core\SingletonInterface {
 
+// tx_div2007_phpTemplateEngine {
+
+    public $entries;
+    public $data;
+    public $parseFunc;
+    private $cObj;
+
+    public function __construct ($entries, $data, $parseFunc) {
+        $this->entries = $entries;
+        $this->data = $data;
+        $this->parseFunc = $parseFunc;
+        $this->cObj = GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer::class);
+    }
+    
 	/**
 	 * Print the feed's summary.
 	 */
-	public function printSummary() {
-		// thanks to Marius Mühlberger <mm@co-operation.de> for the regular expressions
-		// Remove script-tags with content
+	public function printSummary () {
+		// Remove script-tags from content
 		$pattern[] = '/<( *)script([^>]*)type( *)=( *)([^>]*)>(.*)<\/( *)script( *)>/isU';
 		$replace[] = '';
 
@@ -64,7 +67,6 @@ class tx_ecorss_views_feed extends tx_div2007_phpTemplateEngine {
 		// Remove javascript in url, etc
 		$pattern[] = '/"( *)javascript( *):([^"]*)"/isU';
 		$replace[] = '""';
-
 
 		// Replaces baseURL link
 		$baseURL = $GLOBALS['TSFE']->tmpl->setup['config.']['baseURL'];
@@ -78,26 +80,79 @@ class tx_ecorss_views_feed extends tx_div2007_phpTemplateEngine {
 			$replace[] = "<img\${1} src=\"" . $baseURL . "\${2}\" alt=\${2}";
 		}
 
-		$content = preg_replace($pattern,$replace, $this->asRte('summary'));
-
-		print '<![CDATA['.$content.']]>';
+		$content = preg_replace($pattern, $replace, FrontendUtility::RTEcssText($this->cObj, 'summary'));
+    
+		print '<![CDATA[' . $content . ']]>';
 	}
 
 	/**
 	 * Print the current url of the page.
+     * @param	array		row of data
 	 */
-	public function printUrl() {
+	public function printUrl () {
 		print $this->printAsRaw('host');
-		$url = $this->asText('url');
+		$url = $this->printAsText('url');
 		$pattern[] = '/\?clear_cache=1/isU';
 		$replace[] = '';
 		$replace[] = '/\&clear_cache=1/isU';
 		$replace[] = '';
 		print preg_replace($pattern, $replace, $url);
 	}
+
+    public function render ($template) 
+    {
+		ob_start();                                                              // Run the template ...
+		include_once($template);
+		$out = ob_get_clean();
+		return $out;
+    }
+
+    /**
+    * Get a string parsed for standard text input (parseFunc).
+    *
+    * This includes HTMLSPECIALCHARS
+    * and parsing of http://xxxx and mailto://xxxx to links.
+    *
+    * Behaves identical to asHtml() but additionally escapes html special characters.
+    *
+    * @param	mixed		key of data
+    * @param	array		row of data
+    * @return	mixed		parsed string
+    * @see		asHtml()
+    */
+    public function printAsText ($key, array $entry = []) {
+        $setup = [];
+        if(is_array($this->parseFunc)) {
+            $setup['parseFunc.'] = $this->parseFunc;
+        } elseif($this->parseFunc) {
+            $setup['parseFunc'] = $this->parseFunc;
+        } else {
+            $setup['parseFunc'] = '< lib.parseFunc';
+        }
+
+        $setup['value'] = htmlspecialchars($this->printAsRaw($key, $entry));
+
+        return $this->cObj->cObjGetSingle('TEXT', $setup);
+    }
+    
+	/**
+	 * Print a raw value from the internal data array by key.
+	 *
+	 * @param	mixed		key of the internal data array
+     * @param	array		row of data
+	 * @return	void
+	 * @see		asRaw()
+	 */
+    public function printAsRaw ($key, array $entry = [])
+    {
+        $result = '';
+        if (!empty($entry)) {
+            $result = $entry[$key];
+        } else {
+            $result = $this->data[$key];            
+        }
+        
+        return $result;
+    }
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/ecorss/views/class.tx_ecorss_views_feed.php']) {
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/ecorss/views/class.tx_ecorss_views_feed.php']);
-}
-?>

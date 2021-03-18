@@ -7,13 +7,13 @@
 		<lastBuildDate><?php print date('r') ?></lastBuildDate>
 		<generator>TYPO3 - Open Source Content Management</generator>
  
- 		<?php foreach($this['entries'] as $entry): ?>
+ 		<?php foreach($this->entries as $entry): ?>
 		<item>
-			<title><?php $entry->printAsText('title') ?></title>
-			<link><?php print htmlspecialchars($entry->asRaw('link')) ?></link>
-			<description><?php $entry->printSummary()?></description>
-			<pubDate><?php print date('r',$entry->asText('published')) ?></pubDate>
-			<guid><?php print htmlspecialchars($entry->asRaw('link')) ?></guid>
+			<title><?php $this->printAsText('title', $entry) ?></title>
+			<link><?php print htmlspecialchars($this->printAsRaw('link', $entry)) ?></link>
+			<description><?php $entry->printSummary() ?></description>
+			<pubDate><?php print date('r', $this->printAsText('published', $entry)) ?></pubDate>
+			<guid><?php print htmlspecialchars($this->printAsRaw('link', $entry)) ?></guid>
 		</item>
 		<?php endforeach ?>
 	</channel>

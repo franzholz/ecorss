@@ -1,4 +1,8 @@
 <?php
+
+namespace JambageCom\Ecorss\Controller;
+
+
 /***************************************************************
  *	Copyright notice
  *
@@ -28,22 +32,11 @@
  * @package TYPO3
  * @subpackage ecorss
  */
-/**
- * [CLASS/FUNCTION INDEX of SCRIPT]
- *
- *   43: class tx_ecorss_controllers_feed extends tx_div2007_controller
- *   57:     function add($content, $configurations)
- *   98:     function display($content, $configurations)
- *  118:     function defaultAction()
- *  176:     function castList($key, $listClassName = 'tx_div2007_object', $listEntryClassName = 'tx_div2007_object', $callMakeInstanceClassNameForList = TRUE, $callMakeInstanceClasNameForListEntry = TRUE, &$object)
- *
- * TOTAL FUNCTIONS: 4
- * (This index is automatically created/updated by the extension "extdeveval")
- *
- */
-class tx_ecorss_controllers_feed extends tx_div2007_controller {
 
-	public $defaultAction = 'default';
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
+
+class FeedController {
 
 	/**
 	 * Add a feed to the HTML header. Typically it is a link like <link rel="alternate" type="application/atom+xml" title="..." href="..." />
@@ -52,9 +45,8 @@ class tx_ecorss_controllers_feed extends tx_div2007_controller {
 	 * @param	array	$configurations: Plugin configuration
 	 * @access	public
 	 */
-	public function add($content, $configurations) {
+	public function add ($content, $configurations) {
 		$htmlHeader = '';
-		$errorMsg = '<div style="color:red"><b>plugin ecorss error</b> : ';
 		//loop around the feed
 		foreach ($configurations as $config) {
 			if (is_array($config)){
@@ -73,19 +65,20 @@ class tx_ecorss_controllers_feed extends tx_div2007_controller {
 
 					# Define the URL of the feed
 					$conf['data'] = 'leveluid:0';
-					$rootPid = $this->cObj->stdWrap('',$conf); //return the id of the root page
-					$feedURL = $this->cObj->getTypoLink_URL($rootPid, array("type" => $config['typeNum']));
-					//$feedURL = $this->cObj->getTypoLink_URL($GLOBALS['TSFE']->id, array("type" => $config['typeNum']));
+					$rootPid = $this->cObj->stdWrap('', $conf); //return the id of the root page
+					$feedURL = $this->cObj->getTypoLink_URL($rootPid, array('type' => $config['typeNum']));
 
 					# Define the <link>
-					$htmlHeader .= '<link rel="alternate" type="'.$feed.'" title="'.$title.'" href="'.$feedURL.'" />'.chr(10);
+					$htmlHeader .= '<link rel="alternate" type="' . $feed . '" title="'.$title . '" href="' . $feedURL . '" />' . chr(10);
 				} else {
-					print $errorMsg.'parameter typeNum is missing in TypoScript. Try something like this in setup: page.headerData.xxx.myFeed.typeNum = yyy'.'</div>';
-				}
+                    throw new \RuntimeException(
+'<div style="color:red"><b>plugin ecorss error</b>Parameter typeNum is missing in TypoScript. Try something like this in setup: page.headerData.xxx.myFeed.typeNum = yyy'.'</div>');
+                }
 			}
 		}
 
-		$GLOBALS['TSFE']->additionalHeaderData[$this->getClassName()] = $htmlHeader;
+        $pageRenderer = $this->getPageRenderer();
+        $pageRenderer->addHeaderData($htmlHeader);
 
 		/*
 		 * feed example :
@@ -102,10 +95,11 @@ class tx_ecorss_controllers_feed extends tx_div2007_controller {
 	 * @param	array	$configurations: Plugin configuration
 	 * @access	public
 	 */
-	public function display($content, $configurations) {
+	public function display ($content, $configurations) {
 		$TSconfig = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_ecorss.']['controller.']['feed.'];
+
 		if($TSconfig === null){
-			die('<h1>You died:</h1> You forgot to include the static template "ecorss" in your root template in onglet "Includes"');
+			throw new \RuntimeException('<h1>Ecorss</h1> You forgot to include the static template "ecorss" in your root template in onglet "Includes"');
 		}
 		$TSconfig['configurations.'] = array_merge($TSconfig['configurations.'], $configurations);
 		$content = $this->main(null, $TSconfig);
@@ -117,43 +111,30 @@ class tx_ecorss_controllers_feed extends tx_div2007_controller {
 	 *
 	 * @access	public
 	 */
-	public function defaultAction() {
+	/**
+	 * Main method. Call this from TypoScript by a USER cObject.
+	 */
+	public function main ($content, $configurations)
+	{
 		$cacheContent = null;
 
 		// Cache mechanism
-		if (version_compare(TYPO3_version, '6.2.0', '>=')) {
-			$cacheFrontend = t3lib_div::makeInstance('TYPO3\\CMS\\Core\\Cache\\CacheManager')->getCache('cache_hash');
-		}
+        $cacheFrontend = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Cache\CacheManager)->getCache('cache_hash');
 
-		$hash = md5(serialize($this->configurations) . $GLOBALS['TSFE']->type);
+		$hash = md5(serialize($configurations) . $GLOBALS['TSFE']->type);
 		$cacheId = 'Ecorss-Feed-' . $GLOBALS['TSFE']->type;
-		if(!isset($this->configurations['cache_period'])){
-			$this->configurations['cache_period'] = 3600;
+		if(!isset($configurations['cache_period'])){
+			$configurations['cache_period'] = 3600;
 		}
 		// Clear the cache whenever special parameters are given
 		if(
-			isset($this->parameters['clear_cache']) ||
-			t3lib_div::_GP('clear_cache') == 1
+			GeneralUtility::_GP('clear_cache') == 1
 		){
-			if (isset($cacheFrontend) && is_object($cacheFrontend)) {
-				$cacheFrontend->flushByTag($cacheId);
-			} else {
-				$GLOBALS['TYPO3_DB']->exec_DELETEquery(
-					'cache_hash',
-					'ident=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($cacheId, 'cache_hash')
-				);
-			}
+            $cacheFrontend->flushByTag($cacheId);
 		}
 
-		if (isset($cacheFrontend) && is_object($cacheFrontend)) {
-			$cacheContent = $cacheFrontend->get($hash);
-		} else {
-			$cacheContent =
-				$GLOBALS['TSFE']->sys_page->getHash(
-					$hash,
-					$this->configurations['cache_period']
-				);
-		}
+        $cacheContent = $cacheFrontend->get($hash);
+
 		/*
 		 * true, when the content is hold in the cache system
 		 * false, when the cache has expired or no cache is present
@@ -161,95 +142,63 @@ class tx_ecorss_controllers_feed extends tx_div2007_controller {
 		if ($cacheContent !== null) {
 			$output = $cacheContent;
 		} else {
-			// Finding classnames
-			$model = t3lib_div::makeInstance('tx_ecorss_models_feed', $this);
-			$model['title'] = $this->configurations['title'];
-			$model['subtitle'] = $this->configurations['subtitle'];
-			$model['lang'] = isset($this->configurations['lang']) ? $this->configurations['lang'] : 'en-GB';
-			$model['host'] = isset($this->configurations['host']) ? $this->configurations['host'] : t3lib_div::getIndpEnv('TYPO3_SITE_URL');
+			// Finding class-names
+			$model = GeneralUtility::makeInstance(\JambageCom\Ecorss\Model\Feed::class, $this);
+			$data = [];
+			$data['title'] = $configurations['title'];
+			$data['subtitle'] = $configurations['subtitle'];
+			$data['lang'] = isset($configurations['lang']) ? $configurations['lang'] : 'en-GB';
+			$data['host'] = isset($configurations['host']) ? $configurations['host'] : GeneralUtility::getIndpEnv('TYPO3_SITE_URL');
 
 			// Sanitize the host's value
-			if (strpos($model['host'], 'http://') !== 0) {
-				$model['host'] = 'http://'.$model['host'];
+			if (strpos($data['host'], 'http://') !== 0) {
+				$data['host'] = 'http://' . $data['host'];
 			}
-			if (substr($model['host'], -1) == '/') {
-				$model['host'] = substr($model['host'], 0, strlen($model['host']) - 1);
+			if (substr($data['host'], -1) == '/') {
+				$data['host'] = substr($data['host'], 0, strlen($data['host']) - 1);
 			}
 
-			$model['url'] = t3lib_div::getIndpEnv('REQUEST_URI');
-			$model->load();
+			$data['url'] = GeneralUtility::getIndpEnv('REQUEST_URI');
+			$entries = $model->load();
 
 			// ... and the view
-			$view = t3lib_div::makeInstance('tx_ecorss_views_feed', $this, $model);
-			$this->castList('entries', 'tx_ecorss_views_feed', 'tx_ecorss_views_feed', TRUE, TRUE, $view);
+			$view = GeneralUtility::makeInstance(
+                \JambageCom\Ecorss\View\View::class,
+                $entries,
+                $data,
+                (isset($configurations['parseFunc.']) ? $configurations['parseFunc.'] : $configurations['parseFunc'])
+            );
 
-			switch ($this->configurations['feed']) {
+			switch ($configurations['feed']) {
 				case 'rss':
-					$template = 'rssTemplate';
+					$template = 'Templates/rss.php';
 					break;
 				case 'atom':
 				default:
-					$template = 'atomTemplate';
+					$template = 'Templates/atom.php';
 			}
 
-			$encoding = isset($this->configurations['encoding']) ? $this->configurations['encoding'] : 'utf-8';
-			$output = '<?xml version="1.0" encoding="'.$encoding.'"?>'.chr(10);
+			$encoding = isset($configurations['encoding']) ? $configurations['encoding'] : 'utf-8';
+			$output = '<?xml version="1.0" encoding="' . $encoding . '"?>' . chr(10);
 			$output .= $view->render($template);
 
-			if (isset($cacheFrontend) && is_object($cacheFrontend)) {
-				$cacheContent =
-					$cacheFrontend->set(
-						$hash,
-						$output,
-						array($cacheId),
-						$this->configurations['cache_period']
-					);
-			} else {
-				// Cache the feed
-				$GLOBALS['TSFE']->sys_page->storeHash($hash, $output, $cacheId);
-			}
+            $cacheContent =
+                $cacheFrontend->set(
+                    $hash,
+                    $output,
+                    [$cacheId],
+                    $configurations['cache_period']
+                );
 		}
-
-#		if ($this->configurations['tidy']) {
-#			try {
-#				// Initializes variables + commmand
-#				$dirtyName = t3lib_div::tempnam('ecorss_dirty_');
-#				if (!isset($this->configurations['tidy_path'])) {
-#					$this->configurations['tidy_path'] = 'tidy -i -utf8  -xml';
-#				}
-#				$command = $this->configurations['tidy_path'] . ' ' . $dirtyName;
-#
-#				// tidy feed
-#				file_put_contents($dirtyName, $output);
-#				exec($command, $output);
-#				$output = implode(chr(10), $output);
-#
-#				//Clean up unecessary files
-#				unlink($dirtyName);
-#			}
-#			catch(Exception $e) {
-#				new Exception('Unable to write');
-#			}
-#		}
 		return $output;
 	}
 
-	/**
-	 * Temporary function. This function has been removed from lib 0.0.24 from tx_div2007_object.
-	 *
-	 * @access	public
-	 */
-	public function castList($key, $listClassName = 'tx_div2007_object', $listEntryClassName = 'tx_div2007_object', $callMakeInstanceClassNameForList = TRUE, $callMakeInstanceClasNameForListEntry = TRUE, &$object) {
-		// First type the array or object to the new list object, so that we are sure to have an iterator object
-		$list = t3lib_div::makeInstance($listClassName, $object->controller, $object->get($key));
-		for ($list->rewind(); $list->valid(); $list->next()) {
-			$list->set($list->key(), new $listEntryClassName($object->controller, tx_div2007::toHashArray($list->current())));
-		}
-		$object->set($key, $list);
-	}
-
+    /**
+     * @return PageRenderer
+     */
+    protected function getPageRenderer ()
+    {
+        return GeneralUtility::makeInstance(\TYPO3\CMS\Core\Page\PageRenderer::class);
+    }
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/ecorss/controllers/class.tx_ecorss_controllers_feed.php']) {
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/ecorss/controllers/class.tx_ecorss_controllers_feed.php']);
-}

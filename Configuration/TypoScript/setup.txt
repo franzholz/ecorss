@@ -9,25 +9,26 @@ temp.tx_ecorss{
 	defaultFeed = {$plugin.tx_ecorss.defaultFeed}
 }
 
-######### SOME INCLUDE #########
-includeLibs.tx_div = EXT:div/class.tx_div.php
 
 ######### PLUGIN BOX #########
 plugin.tx_ecorss.controller.feed = USER_INT
-plugin.tx_ecorss.controller.feed.userFunc = tx_ecorss_controllers_feed->main
+plugin.tx_ecorss.controller.feed.userFunc = JambageCom\Ecorss\Controller\FeedController->main
 plugin.tx_ecorss.controller.feed.configurations < temp.tx_ecorss
+plugin.tx_ecorss.controller.feed.configurations.parseFunc < lib.parseFunc
+
 
 // We handle the plugin configurations to the box configurations 
 tt_content.list.20.tx_ecorss_controllers_feed =< plugin.tx_ecorss.controller.feed
 
 ######### FORM AJAX CONFIGURATION #########
-includeLibs.tx_ecorss_controllers_feed = EXT:ecorss/controllers/class.tx_ecorss_controllers_feed.php  
+
 /*
 ecorssFeed = PAGE
 ecorssFeed.typeNum = {$plugin.tx_ecorss.feedType}
 ecorssFeed.config.admPanel = 0
 ecorssFeed.config.disableAllHeaderCode = true
 ecorssFeed.50 = USER_INT
-ecorssFeed.50.userFunc = tx_ecorss_controllers_feed->main
+ecorssFeed.50.userFunc = JambageCom\Ecorss\Controller\FeedController
+->main
 ecorssFeed.50.configurations < temp.tx_ecorss
 */

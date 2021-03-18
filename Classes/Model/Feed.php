@@ -1,4 +1,7 @@
 <?php
+
+namespace JambageCom\Ecorss\Model;
+
 /***************************************************************
  *	Copyright notice
  *
@@ -29,41 +32,33 @@
  * @package TYPO3
  * @subpackage ecorss
  */
-/**
- * [CLASS/FUNCTION INDEX of SCRIPT]
- *
- *   48: class tx_ecorss_models_feed extends tx_div2007_object
- *   55:     function load()
- *  234:     function getAllPages($pid, &$arrayOfPid = array())
- *  255:     function updateClosestTitle(&$row, $clauseSQL, $sysLanguageUid = null)
- *  291:     function getAuthor(&$row, $sysLanguageUid = null)
- *  318:     function isPageProtected($pid)
- *
- * TOTAL FUNCTIONS: 2
- * (This index is automatically created/updated by the extension "extdeveval")
- *
- */
-class tx_ecorss_models_feed extends tx_div2007_object {
+
+ 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
+
+class Feed implements \TYPO3\CMS\Core\SingletonInterface {
+
+	public function __construct($controller) {
+        $this->controller = $controller;
+    }
 
 	/**
 	 * Initialize the modem, parse the TS configuration and prepare the list of updated pages for the feed.
-	 *
-	 * @access public
+	 * return array of entries
+	 * @access publi
 	 */
-	public function load() {
+	public function load () {
 		//init a few variables
-		global $TYPO3_CONF_VARS;
 
 		$pidRootline = $this->controller->configurations['pidRootline'];
 		$sysLanguageUid = isset($this->controller->configurations['sysLanguageUid']) ? $this->controller->configurations['sysLanguageUid'] : '';
 		$author = isset($this->controller->configurations['author.']) ? $this->controller->configurations['author.'] : '';
-		$configurations = is_array($this->controller->configurations['select.']) ? $this->controller->configurations['select.'] : array(0);
+		$configurations = is_array($this->controller->configurations['select.']) ? $this->controller->configurations['select.'] : [0];
 		$limitSQL = isset($this->controller->configurations['numberItems']) ? $this->controller->configurations['numberItems'] : '10';
-		$entries = array();
-		$linkClass = tx_div2007::makeInstance('tx_div2007_link');
+		$entries = [];
 
-		$className = tx_div2007::makeInstance('tx_div2007_link');
-		$link = new $className();
+		$link = GeneralUtility::makeInstance('tx_div2007_link');
 		$link->noHash();
 
 		foreach ($configurations as $config) {
@@ -74,7 +69,7 @@ class tx_ecorss_models_feed extends tx_div2007_object {
 			/* PROCESS THE TITLE */
 			if (isset($config['titleXPath'])) {
 				$flexFormField = $config['title'] != '' ? $config['title'] : 'pi_flexform';
-				$title .= "EXTRACTVALUE(".$flexFormField.",'".$config['titleXPath']."')";
+				$title .= "EXTRACTVALUE(" . $flexFormField . ",'".$config['titleXPath']."')";
 			} else {
 				$title = isset($config['title']) ? $config['title'] : 'header';
 			}
@@ -82,7 +77,7 @@ class tx_ecorss_models_feed extends tx_div2007_object {
 			/* PROCESS THE SUMMARY */
 			if (isset($config['summaryXPath'])) {
 				$flexFormField = $config['summary'] != '' ? $config['summary'] : 'pi_flexform';
-				$summary .= "EXTRACTVALUE(".$flexFormField.",'".$config['summaryXPath']."')";
+				$summary .= "EXTRACTVALUE(" . $flexFormField . ",'" . $config['summaryXPath'] . "')";
 			} else {
 				$summary = isset($config['summary']) ? $config['summary'] : 'bodytext';
 			}
@@ -102,23 +97,23 @@ class tx_ecorss_models_feed extends tx_div2007_object {
 			// Added possible extra fields thanks to Pierre Rossel
 			$extraFieldsSQL = isset($config['extraFields']) ? ", " . $config['extraFields'] : '';
 
-			$fieldSQL = $pid.' as pid, '.$uid.' as uid, '.$title.' as title, '.$summary.' as summary, '.$published.' as published, '.$updated.' as updated' . $headerLayout . $authorSQL . $extraFieldsSQL;
+			$fieldSQL = $pid . ' as pid, ' . $uid . ' as uid, ' . $title . ' as title, ' . $summary . ' as summary, ' . $published . ' as published, ' . $updated . ' as updated' . $headerLayout . $authorSQL . $extraFieldsSQL;
 
 			/* PROCESS THE CLAUSE */
-			$clauseSQL = '1=1 ' . tslib_cObj::enableFields($table);
+			$clauseSQL = '1=1 ' . \JambageCom\Div2007\Utility\TableUtility::enableFields($table);
 
 			// Selects some field according to the configuration
 			if (isset($config['filterField']) && isset($config['filterInclude'])) {
-				$values = explode(',',$config['filterInclude']);
+				$values = explode(',' , $config['filterInclude']);
 				foreach ($values as $value) {
-					$clauseSQL .= ' AND '.$config['filterField'].'="'.trim($value).'"';
+					$clauseSQL .= ' AND ' . $config['filterField'] . '="' . trim($value) . '"';
 				}
 			}
 			// Excludes some field according to the configuration
 			if (isset($config['filterField']) && isset($config['filterExclude'])) {
 				$values = explode(',',$config['filterExclude']);
 				foreach ($values as $value) {
-					$clauseSQL .= ' AND '.$config['filterField'].'!="'.trim($value).'"';
+					$clauseSQL .= ' AND ' . $config['filterField'] . '!="' . trim($value) . '"';
 				}
 			}
 
@@ -137,7 +132,7 @@ class tx_ecorss_models_feed extends tx_div2007_object {
 					}
 				}
 
-				$clauseSQL .= ' AND ('.$pageClauseSQL.')'; #merge of the two clauses
+				$clauseSQL .= ' AND (' . $pageClauseSQL . ')'; #merge of the two clauses
 			}
 
 			// Adds additional SQL
@@ -147,7 +142,7 @@ class tx_ecorss_models_feed extends tx_div2007_object {
 
 			// Only return selected language content
 			if ($sysLanguageUid != null) {
-				$clauseSQL .= ' AND sys_language_uid='.$sysLanguageUid;
+				$clauseSQL .= ' AND sys_language_uid=' . $sysLanguageUid;
 			}
 
 			// Adds custom conditions.
@@ -164,13 +159,13 @@ class tx_ecorss_models_feed extends tx_div2007_object {
 
 			$debug = isset($config['debug']) ? $config['debug'] : 'false';
 			if ($debug == 'true' || $debug == 1) {
-				print tx_div2007::db()->SELECTquery($fieldSQL, $table, $clauseSQL, '', $order, $limitSQL);
+				print $GLOBALS['TYPO3_DB']->SELECTquery($fieldSQL, $table, $clauseSQL, '', $order, $limitSQL);
 			}
-			$result = tx_div2007::db()->exec_SELECTquery($fieldSQL, $table, $clauseSQL, '', $order, $limitSQL);
+			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery($fieldSQL, $table, $clauseSQL, '', $order, $limitSQL);
 
 			/* PREPARE THE OUTPUT */
 			if ($result) {
-				while ($row = tx_div2007::db()->sql_fetch_assoc($result)) {
+				while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
 					// Hide pages that are not visible to everybody
 					if ($this->isPageProtected($row['pid'])) {
 						continue;
@@ -181,24 +176,21 @@ class tx_ecorss_models_feed extends tx_div2007_object {
 
 					$url = '';
 					if ($linkItem == 'true' || $linkItem == 1) {
+                        $parameters = [];
 						if ($table == 'tt_content') {	// standard content
 							$link->destination($row['pid']);
-							$parameters = array();
-						}
-						elseif ($table == 'pages'){ // special content from user-configured table
+						} elseif ($table == 'pages'){ // special content from user-configured table
                             $link->destination($row['uid']);
-                            $parameters = array();
-						}
-						else { // special content from user-configured table
+						} else { // special content from user-configured table
 							$linkConfig = $config['single_page.'];
 							$link->destination($linkConfig['pid']);
-							$parameters = array($linkConfig['linkParamUid'] => $row['uid'], 'no_cache' => '1');
+							$parameters = [$linkConfig['linkParamUid'] => $row['uid'], 'no_cache' => '1'];
 						}
 
 						if (isset($this->controller->configurations['profileAjaxType'])) {
 							$parameters = array_merge(
 								$parameters,
-								array('type' => $this->controller->configurations['profileAjaxType'])
+								['type' => $this->controller->configurations['profileAjaxType']]
 							);
 						}
 
@@ -232,7 +224,7 @@ class tx_ecorss_models_feed extends tx_div2007_object {
 					if (strlen($uid) < 5) {
 						$uid = str_pad($uid,5,'0');
 					} else {
-						$uid = substr($uid,0,5);
+						$uid = substr($uid, 0, 5);
 					}
 
 					// Handle empty title or hidden header for table tt_content
@@ -242,16 +234,14 @@ class tx_ecorss_models_feed extends tx_div2007_object {
 					}
 
 					// Get author name and email: configuration
-					if ($author != NULL) {
+					if ($author != null) {
 						$author_name = $author['name'];
 						$author_email = $author['email'];
-					}
-					elseif($authorSQL != NULL) {
+					} elseif($authorSQL != null) {
 						//print "alexandre";
 						$author_name = $row['author'];
 						$author_email = '';
-					}
-					else {
+					} else {
 						list($author_name, $author_email) = $this->getAuthor($row, $sysLanguageUid);
 					}
 
@@ -260,26 +250,26 @@ class tx_ecorss_models_feed extends tx_div2007_object {
 						$row['summary'] = $this->truncate($row['summary'], $config['truncate'], ' ...');
 					}
 
-					$entry = array(
-						'title' => $defaultText.$row['title'],
-						'updated' => $row['updated'],
+					$entry = [
+						'title' => $defaultText .$row['title'],
+						'updated' => $ row['updated'],
 						'published' => $row['published'],
 						'summary' => $row['summary'],
 						'author' => $author_name,
 						'author_email' => $author_email,
 						'link' => $url
-					);
+					];
 
 					/* Hook that enable post processing the output) */
-					if (is_array($TYPO3_CONF_VARS['EXTCONF']['ecorss']['PostProcessingProc'])) {
-						$_params = array(
+					if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ecorss']['PostProcessingProc'])) {
+						$_params = [
 							'config' => isset($this->controller->configurations['hook.']) ? $this->controller->configurations['hook.'] : null,
 							'row'    => $row,
 							'entry'  => &$entry
-						);
+						];
 
-						foreach ($TYPO3_CONF_VARS['EXTCONF']['ecorss']['PostProcessingProc'] as $_funcRef) {
-							t3lib_div::callUserFunction($_funcRef, $_params, $this);
+						foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ecorss']['PostProcessingProc'] as $_funcRef) {
+							GeneralUtility::callUserFunction($_funcRef, $_params, $this);
 						}
 					}
 
@@ -288,11 +278,12 @@ class tx_ecorss_models_feed extends tx_div2007_object {
 					$entries[(int)($row['updated'] / 100000) . $uid] = $entry;
 				}
 			}
-			// Sort decreasingly in case it is an union of different arrays
-			krsort($entries,SORT_NUMERIC);
+			// Sort decreasingly in case it is a union of different arrays
+			krsort($entries, SORT_NUMERIC);
 		}
 
-		$this['entries'] = array_splice($entries, 0, $limitSQL);
+		$result = array_splice($entries, 0, $limitSQL);
+		return $result;
 	}
 
 	/**
@@ -302,7 +293,7 @@ class tx_ecorss_models_feed extends tx_div2007_object {
 	 * @param	int		$int_length
 	 * @param	int		$int_length
 	 */
-	private function truncate($content, $length, $str_suffixe=""){
+	private function truncate ($content, $length, $str_suffixe = ''){
 		$content = strip_tags($content);
 
 		//TRUE means the text needs to be cut up
@@ -313,7 +304,7 @@ class tx_ecorss_models_feed extends tx_div2007_object {
 			$last_space = strrpos($content, " ");
 
 			// Adds the terminaison
-			$content = substr($content, 0, $last_space).$str_suffixe;
+			$content = substr($content, 0, $last_space) . $str_suffixe;
 		}
 		return $content;
 	}
@@ -325,15 +316,14 @@ class tx_ecorss_models_feed extends tx_div2007_object {
 	 * @return	string	$domain: the target domain name
 	 *
 	 */
-	private function getDomain($pid) {
+	private function getDomain ($pid) {
 		// check wheter we are in a multidomain environment
-		global $TYPO3_DB;
 
 		//default value
-		$domain = t3lib_div::getIndpEnv('TYPO3_SITE_URL');
+		$domain = GeneralUtility::getIndpEnv('TYPO3_SITE_URL');
 
 		// Looks for existing domain
-		$records = $TYPO3_DB->exec_SELECTgetRows('*','sys_domain', '', '', 'sorting DESC');
+		$records = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows('*', 'sys_domain', '', '', 'sorting DESC');
 
 		// Looks for the right domain
 		if (!empty($records)) {
@@ -365,12 +355,12 @@ class tx_ecorss_models_feed extends tx_div2007_object {
 	 * @access	private
 	 * @return	array		Array of all pid being children of <tt>$pid</tt>
 	 */
-	public function getAllPages($pid, &$arrayOfPid = array()) {
-		$pages = tx_div2007::db()->exec_SELECTgetRows('uid','pages','deleted = 0 AND hidden = 0 AND pid='.$pid);
-		$arrayOfPid = array_merge($pages,$arrayOfPid);
+	public function getAllPages ($pid, &$arrayOfPid = []) {
+		$pages = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows('uid', 'pages', 'deleted = 0 AND hidden = 0 AND pid=' . $pid);
+		$arrayOfPid = array_merge($pages, $arrayOfPid);
 		if (count($pages) > 0) {
 			foreach ($pages as $page) {
-				$this->getAllPages($page['uid'],$arrayOfPid);
+				$this->getAllPages($page['uid'], $arrayOfPid);
 			}
 		}
 		return $arrayOfPid;
@@ -386,26 +376,26 @@ class tx_ecorss_models_feed extends tx_div2007_object {
 	 * @access	private
 	 * @return	string		Closest header for the given element
 	 */
-	public function updateClosestTitle(&$row, $clauseSQL, $sysLanguageUid = null) {
-		$clauseSQL .= ' AND pid='.$row['pid'].' AND sorting < (SELECT sorting FROM tt_content WHERE uid='.$row['uid'].') AND header != \'\'';
-		$result = tx_div2007::db()->exec_SELECTquery('header','tt_content',$clauseSQL,'','sorting DESC',1);
+	public function updateClosestTitle (&$row, $clauseSQL, $sysLanguageUid = null) {
+		$clauseSQL .= ' AND pid=' . $row['pid'] . ' AND sorting < (SELECT sorting FROM tt_content WHERE uid=' . $row['uid'] . ') AND header != \'\'';
+		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('header', 'tt_content', $clauseSQL, '', 'sorting DESC', 1);
 		if ($result) {
-			$row2 = tx_div2007::db()->sql_fetch_assoc($result);
+			$row2 = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
 			if ($row2['header']) {
 				// Update the title with the header of a previous content element
 				$row['title'] = $row2['header'];
 			} else {
 				// Title cannot be found, use the page's title instead
 				$table = 'pages';
-				$clauseSQL = 'uid='.$row['pid'];
+				$clauseSQL = 'uid=' . $row['pid'];
 				if ($sysLanguageUid != null && $sysLanguageUid > 0) {
 					$table = 'pages_language_overlay';
-					$clauseSQL .= ' AND sys_language_uid='.$sysLanguageUid;
+					$clauseSQL .= ' AND sys_language_uid=' . $sysLanguageUid;
 				}
 
-				$result = tx_div2007::db()->exec_SELECTquery('title',$table,$clauseSQL);
+				$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('title', $table, $clauseSQL);
 				if ($result) {
-					$row2 = tx_div2007::db()->sql_fetch_assoc($result);
+					$row2 = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
 					// Update the title with the page's title
 					$row['title'] = $row2['title'];
 				}
@@ -422,25 +412,25 @@ class tx_ecorss_models_feed extends tx_div2007_object {
 	 * @param	integer		$sysLanguageUid: <tt>sys_language_uid</tt> when used in a multilingual context
 	 * @return	array		author name and email
 	 */
-	public function getAuthor(&$row, $sysLanguageUid = null) {
+	public function getAuthor( &$row, $sysLanguageUid = null) {
 		$author = $author_email = '';
 
-		$clauseSQL = 'uid='.$row['pid'];
+		$clauseSQL = 'uid=' . $row['pid'];
 		$table = 'pages';
 		if ($sysLanguageUid != null && $sysLanguageUid > 0) {
 			$table = 'pages_language_overlay';
 		}
 
-		$result = tx_div2007::db()->exec_SELECTquery('author, author_email',$table,$clauseSQL);
+		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('author, author_email', $table, $clauseSQL);
 		if ($result) {
-			$row2 = tx_div2007::db()->sql_fetch_assoc($result);
+			$row2 = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
 			$author = $row2['author'];
 			$author_email = $row2['author_email'];
 		}
 
 		if (empty($author)) $author = 'anonymous';
 
-		return array($author, $author_email);
+		return [$author, $author_email];
 	}
 
 	/**
@@ -449,20 +439,15 @@ class tx_ecorss_models_feed extends tx_div2007_object {
 	 * @param	integer		$pid: page id to be tested
 	 * @return	boolean		true if the page should not be disclosed to everybody
 	 */
-	public function isPageProtected($pid) {
+	public function isPageProtected ($pid) {
 		$clauseSQL = 'uid=' . $pid;
 		$table = 'pages';
 
-		$result = tx_div2007::db()->exec_SELECTquery('perms_everybody', $table, $clauseSQL);
+		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('perms_everybody', $table, $clauseSQL);
 		if ($result) {
-			$row = tx_div2007::db()->sql_fetch_assoc($result);
+			$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
 			return !($row['perms_everybody'] == 0 || $row['perms_everybody'] & 1);
 		}
 		return false;
 	}
 }
-
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/ecorss/models/class.tx_ecorss_models_feed.php']) {
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/ecorss/models/class.tx_ecorss_models_feed.php']);
-}
-?>
