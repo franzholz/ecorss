@@ -31,11 +31,9 @@
     "friendsoftypo3/typo3db-legacy": "^1"
   },
   "autoload": {
-    "classmap": [
-      "controllers",
-      "models",
-      "views"
-    ]
+    "psr-4": {
+      "JambageCom\\Ecorss\\": "Classes"
+    }
   },
   "replace": {
     "jambagecom/ecorss": "self.version"
