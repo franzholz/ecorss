@@ -6,7 +6,7 @@ temp.tx_ecorss{
 	dateFormat = %Y-%m-%dT%H:%M:%S%z
 	title = {$plugin.tx_ecorss.title} 
 	subtitle = {$plugin.tx_ecorss.subtitle}
-	defaultFeed = {$plugin.tx_ecorss.defaultFeed}
+	feed = {$plugin.tx_ecorss.defaultFeed}
 }
 
 

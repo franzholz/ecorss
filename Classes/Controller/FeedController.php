@@ -142,6 +142,7 @@ class FeedController {
 		if ($cacheContent !== null) {
 			$output = $cacheContent;
 		} else {
+            $sanitizer = GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\Resource\FilePathSanitizer::class);
 			// Finding class-names
 			$model = GeneralUtility::makeInstance(\JambageCom\Ecorss\Model\Feed::class, $this);
 			$data = [];
@@ -169,18 +170,21 @@ class FeedController {
                 (isset($configurations['parseFunc.']) ? $configurations['parseFunc.'] : $configurations['parseFunc'])
             );
 
-			switch ($configurations['feed']) {
-				case 'rss':
-					$template = 'Templates/rss.php';
-					break;
-				case 'atom':
-				default:
-					$template = 'Templates/atom.php';
-			}
+            $pathTemplateDirectory = $sanitizer->sanitize($configuration['pathToTemplateDirectory']);
 
-			$encoding = isset($configurations['encoding']) ? $configurations['encoding'] : 'utf-8';
-			$output = '<?xml version="1.0" encoding="' . $encoding . '"?>' . chr(10);
-			$output .= $view->render($template);
+            switch ($configurations['feed']) {
+                case 'rss':
+                    $template = $pathTemplateDirectory . '/' .  $configuration['rssTemplate'];
+                    break;
+                case 'atom':
+                default:
+                    $template = $pathTemplateDirectory . '/' .  $configuration['atomTemplate'];
+                    break;
+            }
+
+            $encoding = isset($configurations['encoding']) ? $configurations['encoding'] : 'utf-8';
+            $output = '<?xml version="1.0" encoding="' . $encoding . '"?>' . chr(10);
+            $output .= $view->render($template);
 
             $cacheContent =
                 $cacheFrontend->set(
@@ -189,9 +193,9 @@ class FeedController {
                     [$cacheId],
                     $configurations['cache_period']
                 );
-		}
-		return $output;
-	}
+        }
+        return $output;
+    }
 
     /**
      * @return PageRenderer
