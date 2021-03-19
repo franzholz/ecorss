@@ -119,7 +119,7 @@ class FeedController {
 		$cacheContent = null;
 
 		// Cache mechanism
-        $cacheFrontend = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Cache\CacheManager)->getCache('cache_hash');
+        $cacheFrontend = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Cache\CacheManager::class)->getCache('cache_hash');
 
 		$hash = md5(serialize($configurations) . $GLOBALS['TSFE']->type);
 		$cacheId = 'Ecorss-Feed-' . $GLOBALS['TSFE']->type;
