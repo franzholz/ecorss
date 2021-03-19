@@ -27,8 +27,6 @@ call_user_func(function () {
     $listType = 'tx_ecorss_controllers_feed';
     $extensionKey = 'ecorss';
     $GLOBALS['TCA'][$table]['types']['list']['subtypes_excludelist'][$listType] = 'layout,select_key';
-    
-    call_user_func($emClass . '::addPlugin', array('LLL:EXT:ecorss/locallang_db.xml:tt_content.list_type_pi1', 'tx_ecorss_controllers_feed'));
 
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(
         [
