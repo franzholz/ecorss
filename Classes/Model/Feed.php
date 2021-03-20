@@ -46,7 +46,6 @@ class Feed implements \TYPO3\CMS\Core\SingletonInterface {
 	 */
 	public function load ($configurations) {
 		//init a few variables
-
 		$pidRootline = $configurations['pidRootline'];
 		$sysLanguageUid = isset($configurations['sysLanguageUid']) ? $configurations['sysLanguageUid'] : '';
 		$author = isset($configurations['author.']) ? $configurations['author.'] : '';
@@ -55,8 +54,9 @@ class Feed implements \TYPO3\CMS\Core\SingletonInterface {
 
 		$link = GeneralUtility::makeInstance('tx_div2007_link');
 		$link->noHash();
+        $databaseConfig = $configurations['select.'];
 
-		foreach ($configurations as $config) {
+		foreach ($databaseConfig as $config) {
 
 			// Initialize some variables
 			$summary = $title = '';
@@ -156,6 +156,7 @@ class Feed implements \TYPO3\CMS\Core\SingletonInterface {
 			if ($debug == 'true' || $debug == 1) {
 				print $GLOBALS['TYPO3_DB']->SELECTquery($fieldSQL, $table, $clauseSQL, '', $order, $limitSQL);
 			}
+
 			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery($fieldSQL, $table, $clauseSQL, '', $order, $limitSQL);
 
 			/* PREPARE THE OUTPUT */
@@ -253,7 +254,7 @@ class Feed implements \TYPO3\CMS\Core\SingletonInterface {
 						'author' => $author_name,
 						'author_email' => $author_email,
 						'link' => $url
-					];
+					];					
 
 					/* Hook that enable post processing the output) */
 					if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ecorss']['PostProcessingProc'])) {
