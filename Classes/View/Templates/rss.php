@@ -10,10 +10,10 @@
  		<?php foreach($this->entries as $entry): ?>
 		<item>
 			<title><?php $this->printAsText('title', $entry) ?></title>
-			<link><?php print htmlspecialchars($this->printAsRaw('link', $entry)) ?></link>
-			<description><?php $entry->printSummary() ?></description>
-			<pubDate><?php print date('r', $this->printAsText('published', $entry)) ?></pubDate>
-			<guid><?php print htmlspecialchars($this->printAsRaw('link', $entry)) ?></guid>
+			<link><?php print htmlspecialchars($this->asRaw('link', $entry)) ?></link>
+			<description><?php $this->printSummary($entry) ?></description>
+			<pubDate><?php print date('r', $this->asText('published', $entry)) ?></pubDate>
+			<guid><?php print htmlspecialchars($this->asRaw('link', $entry)) ?></guid>
 		</item>
 		<?php endforeach ?>
 	</channel>

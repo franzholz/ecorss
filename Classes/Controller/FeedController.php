@@ -116,7 +116,11 @@ class FeedController {
 	 */
 	public function main ($content, $configurations)
 	{
+        if (isset($configurations['configurations.'])) {
+            $configurations = $configurations['configurations.'];
+        }
 		$cacheContent = null;
+		$output = '';
 
 		// Cache mechanism
         $cacheFrontend = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Cache\CacheManager::class)->getCache('cache_hash');
@@ -135,57 +139,56 @@ class FeedController {
 
         $cacheContent = $cacheFrontend->get($hash);
 
-		/*
-		 * true, when the content is hold in the cache system
-		 * false, when the cache has expired or no cache is present
-		 */
-		if ($cacheContent !== null) {
-			$output = $cacheContent;
-		} else {
+        /*
+        * true, when the content is hold in the cache system
+        * false, when the cache has expired or no cache is present
+        */
+        if (!empty($cacheContent)) {
+            $output = $cacheContent;
+        } else {
             $sanitizer = GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\Resource\FilePathSanitizer::class);
-			// Finding class-names
-			$model = GeneralUtility::makeInstance(\JambageCom\Ecorss\Model\Feed::class, $this);
-			$data = [];
-			$data['title'] = $configurations['title'];
-			$data['subtitle'] = $configurations['subtitle'];
-			$data['lang'] = isset($configurations['lang']) ? $configurations['lang'] : 'en-GB';
-			$data['host'] = isset($configurations['host']) ? $configurations['host'] : GeneralUtility::getIndpEnv('TYPO3_SITE_URL');
+            // Finding class-names
+            $model = GeneralUtility::makeInstance(\JambageCom\Ecorss\Model\Feed::class, $this);
+            $data = [];
+            $data['title'] = $configurations['title'];
+            $data['subtitle'] = $configurations['subtitle'];
+            $data['lang'] = isset($configurations['lang']) ? $configurations['lang'] : 'en-GB';
+            $data['host'] = isset($configurations['host']) ? $configurations['host'] : GeneralUtility::getIndpEnv('TYPO3_SITE_URL');
 
-			// Sanitize the host's value
-			if (strpos($data['host'], 'http://') !== 0) {
-				$data['host'] = 'http://' . $data['host'];
-			}
-			if (substr($data['host'], -1) == '/') {
-				$data['host'] = substr($data['host'], 0, strlen($data['host']) - 1);
-			}
+            // Sanitize the host's value
+            if (strpos($data['host'], 'http://') !== 0) {
+                $data['host'] = 'http://' . $data['host'];
+            }
+            if (substr($data['host'], -1) == '/') {
+                $data['host'] = substr($data['host'], 0, strlen($data['host']) - 1);
+            }
 
-			$data['url'] = GeneralUtility::getIndpEnv('REQUEST_URI');
-			$entries = $model->load();
+            $data['url'] = GeneralUtility::getIndpEnv('REQUEST_URI');
+            $entries = $model->load();
 
-			// ... and the view
-			$view = GeneralUtility::makeInstance(
+            // ... and the view
+            $view = GeneralUtility::makeInstance(
                 \JambageCom\Ecorss\View\View::class,
                 $entries,
                 $data,
                 (isset($configurations['parseFunc.']) ? $configurations['parseFunc.'] : $configurations['parseFunc'])
-            );
-
-            $pathTemplateDirectory = $sanitizer->sanitize($configuration['pathToTemplateDirectory']);
+            );    
+            $template = '';
+            $pathTemplateDirectory = $configurations['pathToTemplateDirectory'];
 
             switch ($configurations['feed']) {
                 case 'rss':
-                    $template = $pathTemplateDirectory . '/' .  $configuration['rssTemplate'];
+                    $template = $pathTemplateDirectory . '/' .  $configurations['rssTemplate'];
                     break;
                 case 'atom':
                 default:
-                    $template = $pathTemplateDirectory . '/' .  $configuration['atomTemplate'];
+                    $template = $pathTemplateDirectory . '/' .  $configurations['atomTemplate'];
                     break;
             }
-
+            $template = $sanitizer->sanitize($template);
             $encoding = isset($configurations['encoding']) ? $configurations['encoding'] : 'utf-8';
             $output = '<?xml version="1.0" encoding="' . $encoding . '"?>' . chr(10);
             $output .= $view->render($template);
-
             $cacheContent =
                 $cacheFrontend->set(
                     $hash,

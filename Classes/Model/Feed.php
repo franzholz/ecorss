@@ -252,7 +252,7 @@ class Feed implements \TYPO3\CMS\Core\SingletonInterface {
 
 					$entry = [
 						'title' => $defaultText .$row['title'],
-						'updated' => $ row['updated'],
+						'updated' => $row['updated'],
 						'published' => $row['published'],
 						'summary' => $row['summary'],
 						'author' => $author_name,

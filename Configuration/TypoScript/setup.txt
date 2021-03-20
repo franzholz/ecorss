@@ -1,6 +1,6 @@
 ######### COMMON CONFIGURATION #########
 temp.tx_ecorss{
-	pathToTemplateDirectory = EXT:ecorss/templates
+	pathToTemplateDirectory = EXT:ecorss/Classes/View/Templates
 	atomTemplate = atom.php
 	rssTemplate = rss.php
 	dateFormat = %Y-%m-%dT%H:%M:%S%z

@@ -54,8 +54,9 @@ class View implements \TYPO3\CMS\Core\SingletonInterface {
     
 	/**
 	 * Print the feed's summary.
+    * @param	array		row of data
 	 */
-	public function printSummary () {
+	public function printSummary (array $entry = []) {
 		// Remove script-tags from content
 		$pattern[] = '/<( *)script([^>]*)type( *)=( *)([^>]*)>(.*)<\/( *)script( *)>/isU';
 		$replace[] = '';
@@ -80,7 +81,7 @@ class View implements \TYPO3\CMS\Core\SingletonInterface {
 			$replace[] = "<img\${1} src=\"" . $baseURL . "\${2}\" alt=\${2}";
 		}
 
-		$content = preg_replace($pattern, $replace, FrontendUtility::RTEcssText($this->cObj, 'summary'));
+		$content = preg_replace($pattern, $replace, FrontendUtility::RTEcssText($this->cObj, $this->asRaw('summary', $entry)));
     
 		print '<![CDATA[' . $content . ']]>';
 	}
@@ -90,8 +91,8 @@ class View implements \TYPO3\CMS\Core\SingletonInterface {
      * @param	array		row of data
 	 */
 	public function printUrl () {
-		print $this->printAsRaw('host');
-		$url = $this->printAsText('url');
+		print $this->asRaw('host');
+		$url = $this->asText('url');
 		$pattern[] = '/\?clear_cache=1/isU';
 		$replace[] = '';
 		$replace[] = '/\&clear_cache=1/isU';
@@ -101,7 +102,8 @@ class View implements \TYPO3\CMS\Core\SingletonInterface {
 
     public function render ($template) 
     {
-		ob_start();                                                              // Run the template ...
+		ob_start();                                                             
+		// Run the template ...
 		include_once($template);
 		$out = ob_get_clean();
 		return $out;
@@ -120,7 +122,7 @@ class View implements \TYPO3\CMS\Core\SingletonInterface {
     * @return	mixed		parsed string
     * @see		asHtml()
     */
-    public function printAsText ($key, array $entry = []) {
+    public function asText ($key, array $entry = []) {
         $setup = [];
         if(is_array($this->parseFunc)) {
             $setup['parseFunc.'] = $this->parseFunc;
@@ -130,9 +132,9 @@ class View implements \TYPO3\CMS\Core\SingletonInterface {
             $setup['parseFunc'] = '< lib.parseFunc';
         }
 
-        $setup['value'] = htmlspecialchars($this->printAsRaw($key, $entry));
-
-        return $this->cObj->cObjGetSingle('TEXT', $setup);
+        $setup['value'] = htmlspecialchars($this->asRaw($key, $entry));
+        $result = $this->cObj->cObjGetSingle('TEXT', $setup);
+        return $result;
     }
     
 	/**
@@ -143,16 +145,26 @@ class View implements \TYPO3\CMS\Core\SingletonInterface {
 	 * @return	void
 	 * @see		asRaw()
 	 */
-    public function printAsRaw ($key, array $entry = [])
+    public function asRaw ($key, array $entry = [])
     {
         $result = '';
-        if (!empty($entry)) {
+        if (!empty($entry) && !empty($entry[$key])) {
             $result = $entry[$key];
         } else {
             $result = $this->data[$key];            
         }
         
         return $result;
+    }
+
+    public function printAsRaw ($key, array $entry = []) 
+    {
+        print $this->asRaw($key, $entry);
+    }
+
+    public function printAsText ($key, array $entry = []) 
+    {
+        print $this->asText($key, $entry);
     }
 }
 
