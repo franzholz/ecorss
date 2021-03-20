@@ -20,6 +20,7 @@ plugin.tx_ecorss.controller.feed.configurations.parseFunc < lib.parseFunc
 // We handle the plugin configurations to the box configurations 
 tt_content.list.20.tx_ecorss_controllers_feed =< plugin.tx_ecorss.controller.feed
 
+
 ######### FORM AJAX CONFIGURATION #########
 
 /*

@@ -148,7 +148,7 @@ class FeedController {
         } else {
             $sanitizer = GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\Resource\FilePathSanitizer::class);
             // Finding class-names
-            $model = GeneralUtility::makeInstance(\JambageCom\Ecorss\Model\Feed::class, $this);
+            $model = GeneralUtility::makeInstance(\JambageCom\Ecorss\Model\Feed::class);
             $data = [];
             $data['title'] = $configurations['title'];
             $data['subtitle'] = $configurations['subtitle'];
@@ -159,12 +159,15 @@ class FeedController {
             if (strpos($data['host'], 'http://') !== 0) {
                 $data['host'] = 'http://' . $data['host'];
             }
+            if (strpos($data['host'], 'https://') !== 0) {
+                $data['host'] = 'https://' . $data['host'];
+            }
             if (substr($data['host'], -1) == '/') {
                 $data['host'] = substr($data['host'], 0, strlen($data['host']) - 1);
             }
 
             $data['url'] = GeneralUtility::getIndpEnv('REQUEST_URI');
-            $entries = $model->load();
+            $entries = $model->load($configurations);
 
             // ... and the view
             $view = GeneralUtility::makeInstance(
@@ -186,8 +189,8 @@ class FeedController {
                     break;
             }
             $template = $sanitizer->sanitize($template);
-            $encoding = isset($configurations['encoding']) ? $configurations['encoding'] : 'utf-8';
-            $output = '<?xml version="1.0" encoding="' . $encoding . '"?>' . chr(10);
+            $encoding = isset($configurations['encoding']) ? $configurations['encoding'] : 'UTF-8';
+            $output = '<?xml version="1.0" encoding="' . $encoding . '" ?>' . chr(10);
             $output .= $view->render($template);
             $cacheContent =
                 $cacheFrontend->set(

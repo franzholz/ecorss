@@ -39,23 +39,18 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class Feed implements \TYPO3\CMS\Core\SingletonInterface {
 
-	public function __construct($controller) {
-        $this->controller = $controller;
-    }
-
 	/**
 	 * Initialize the modem, parse the TS configuration and prepare the list of updated pages for the feed.
 	 * return array of entries
 	 * @access publi
 	 */
-	public function load () {
+	public function load ($configurations) {
 		//init a few variables
 
-		$pidRootline = $this->controller->configurations['pidRootline'];
-		$sysLanguageUid = isset($this->controller->configurations['sysLanguageUid']) ? $this->controller->configurations['sysLanguageUid'] : '';
-		$author = isset($this->controller->configurations['author.']) ? $this->controller->configurations['author.'] : '';
-		$configurations = is_array($this->controller->configurations['select.']) ? $this->controller->configurations['select.'] : [0];
-		$limitSQL = isset($this->controller->configurations['numberItems']) ? $this->controller->configurations['numberItems'] : '10';
+		$pidRootline = $configurations['pidRootline'];
+		$sysLanguageUid = isset($configurations['sysLanguageUid']) ? $configurations['sysLanguageUid'] : '';
+		$author = isset($configurations['author.']) ? $configurations['author.'] : '';
+		$limitSQL = isset($configurations['numberItems']) ? $configurations['numberItems'] : '10';
 		$entries = [];
 
 		$link = GeneralUtility::makeInstance('tx_div2007_link');
@@ -69,7 +64,7 @@ class Feed implements \TYPO3\CMS\Core\SingletonInterface {
 			/* PROCESS THE TITLE */
 			if (isset($config['titleXPath'])) {
 				$flexFormField = $config['title'] != '' ? $config['title'] : 'pi_flexform';
-				$title .= "EXTRACTVALUE(" . $flexFormField . ",'".$config['titleXPath']."')";
+				$title .= "EXTRACTVALUE(" . $flexFormField . ",'" . $config['titleXPath'] . "')";
 			} else {
 				$title = isset($config['title']) ? $config['title'] : 'header';
 			}
@@ -187,10 +182,10 @@ class Feed implements \TYPO3\CMS\Core\SingletonInterface {
 							$parameters = [$linkConfig['linkParamUid'] => $row['uid'], 'no_cache' => '1'];
 						}
 
-						if (isset($this->controller->configurations['profileAjaxType'])) {
+						if (isset($configurations['profileAjaxType'])) {
 							$parameters = array_merge(
 								$parameters,
-								['type' => $this->controller->configurations['profileAjaxType']]
+								['type' => $configurations['profileAjaxType']]
 							);
 						}
 
@@ -208,10 +203,10 @@ class Feed implements \TYPO3\CMS\Core\SingletonInterface {
 						$url = $domain . $link->makeUrl(false);
 
 						//handle the anchors
-						if (!isset($this->controller->configurations['no_anchor'])) {
-							$this->controller->configurations['no_anchor'] = 0;
+						if (!isset($configurations['no_anchor'])) {
+							$configurations['no_anchor'] = 0;
 						}
-						if ($this->controller->configurations['no_anchor'] != 1) {
+						if ($configurations['no_anchor'] != 1) {
 							$url .= '#c'.$row['uid'];
 						}
 					}
@@ -263,7 +258,7 @@ class Feed implements \TYPO3\CMS\Core\SingletonInterface {
 					/* Hook that enable post processing the output) */
 					if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ecorss']['PostProcessingProc'])) {
 						$_params = [
-							'config' => isset($this->controller->configurations['hook.']) ? $this->controller->configurations['hook.'] : null,
+							'config' => isset($configurations['hook.']) ? $configurations['hook.'] : null,
 							'row'    => $row,
 							'entry'  => &$entry
 						];
