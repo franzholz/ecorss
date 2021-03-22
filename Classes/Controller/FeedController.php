@@ -119,7 +119,7 @@ class FeedController {
         if (isset($configurations['configurations.'])) {
             $configurations = $configurations['configurations.'];
         }
-		$cacheContent = null;
+        $cacheContent = null;
 		$output = '';
 
 		// Cache mechanism
@@ -156,10 +156,12 @@ class FeedController {
             $data['host'] = isset($configurations['host']) ? $configurations['host'] : GeneralUtility::getIndpEnv('TYPO3_SITE_URL');
 
             // Sanitize the host's value
-            if (strpos($data['host'], 'http://') !== 0) {
-                $data['host'] = 'http://' . $data['host'];
-            }
-            if (strpos($data['host'], 'https://') !== 0) {
+            if (
+                strpos(
+                $data['host'],
+                'http' . (GeneralUtility::getIndpEnv('TYPO3_SSL') ? 's' : '') . '://'
+                ) !== 0
+            ) {
                 $data['host'] = 'https://' . $data['host'];
             }
             if (substr($data['host'], -1) == '/') {
