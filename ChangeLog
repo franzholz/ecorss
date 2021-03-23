@@ -1,3 +1,7 @@
+
+2021-03-23 Franz Holzinger <franz@ttproducts.de>
+    * remove feature multidomain: No domain records are available any more. Use a TYPO3 link method instead of the current link generation in the future, if this feature is needed again.
+
 2021-03-18 Franz Holzinger <franz@ttproducts.de>
 	* compatibility TYPO3 9.5, 10.4: renamed classes. THe former classes from div and lib are not used any more.
 

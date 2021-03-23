@@ -44,8 +44,8 @@ class Feed implements \TYPO3\CMS\Core\SingletonInterface {
 	 * return array of entries
 	 * @access publi
 	 */
-	public function load ($configurations) {
-		//init a few variables
+	public function load ($configurations)
+	{
 		$pidRootline = $configurations['pidRootline'];
 		$sysLanguageUid = isset($configurations['sysLanguageUid']) ? $configurations['sysLanguageUid'] : '';
 		$author = isset($configurations['author.']) ? $configurations['author.'] : '';
@@ -55,9 +55,9 @@ class Feed implements \TYPO3\CMS\Core\SingletonInterface {
 		$link = GeneralUtility::makeInstance('tx_div2007_link');
 		$link->noHash();
         $databaseConfig = $configurations['select.'];
+        $baseUrl = GeneralUtility::getIndpEnv('TYPO3_SITE_URL');
 
 		foreach ($databaseConfig as $config) {
-
 			// Initialize some variables
 			$summary = $title = '';
 
@@ -156,7 +156,6 @@ class Feed implements \TYPO3\CMS\Core\SingletonInterface {
 			if ($debug == 'true' || $debug == 1) {
 				print $GLOBALS['TYPO3_DB']->SELECTquery($fieldSQL, $table, $clauseSQL, '', $order, $limitSQL);
 			}
-
 			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery($fieldSQL, $table, $clauseSQL, '', $order, $limitSQL);
 
 			/* PREPARE THE OUTPUT */
@@ -191,15 +190,12 @@ class Feed implements \TYPO3\CMS\Core\SingletonInterface {
 						}
 
 						$link->parameters($parameters);
+                        $domain = $baseUrl;
 
 						// domain may be something else. Look for it
 						if (isset($config['baseUrl']) && $config['baseUrl'] != '') {
 							$domain = $config['baseUrl'];
 						}
-						else {
-							$domain = $this->getDomain($link->destination);
-						}
-
 						// Gets the URL
 						$url = $domain . $link->makeUrl(false);
 
@@ -254,7 +250,7 @@ class Feed implements \TYPO3\CMS\Core\SingletonInterface {
 						'author' => $author_name,
 						'author_email' => $author_email,
 						'link' => $url
-					];					
+					];
 
 					/* Hook that enable post processing the output) */
 					if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ecorss']['PostProcessingProc'])) {
@@ -289,7 +285,8 @@ class Feed implements \TYPO3\CMS\Core\SingletonInterface {
 	 * @param	int		$int_length
 	 * @param	int		$int_length
 	 */
-	private function truncate ($content, $length, $str_suffixe = ''){
+	private function truncate ($content, $length, $str_suffixe = '')
+	{
 		$content = strip_tags($content);
 
 		//TRUE means the text needs to be cut up
@@ -306,44 +303,6 @@ class Feed implements \TYPO3\CMS\Core\SingletonInterface {
 	}
 
 	/**
-	 * Look for the real domain name. Useful in multidomain configuration
-	 *
-	 * @param	int		$pid: the pid of the current page
-	 * @return	string	$domain: the target domain name
-	 *
-	 */
-	private function getDomain ($pid) {
-		// check wheter we are in a multidomain environment
-
-		//default value
-		$domain = GeneralUtility::getIndpEnv('TYPO3_SITE_URL');
-
-		// Looks for existing domain
-		$records = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows('*', 'sys_domain', '', '', 'sorting DESC');
-
-		// Looks for the right domain
-		if (!empty($records)) {
-			foreach($records as $record) {
-				$domains[$record['pid']] = $record['domainName'];
-			}
-
-			$pids = $GLOBALS['TSFE']->sys_page->getRootLine($pid);
-			foreach ($pids as $pid) {
-				$uid = $pid['uid'];
-				if (isset($domains[$uid])) {
-					$protocole = 'http';
-					if (preg_match('/https/is', $GLOBALS['_SERVER']['SERVER_PROTOCOL'])) {
-						$protocole = 'https';
-					}
-					$domain = $protocole . '://' . $domains[$uid] . '/';
-					break;
-				}
-			}
-		}
-		return $domain;
-	}
-
-	/**
 	 * Return the list of page's pid being descendant of <tt>$pid</tt>.
 	 *
 	 * @param	integer		$pid: mother page's pid
@@ -351,7 +310,8 @@ class Feed implements \TYPO3\CMS\Core\SingletonInterface {
 	 * @access	private
 	 * @return	array		Array of all pid being children of <tt>$pid</tt>
 	 */
-	public function getAllPages ($pid, &$arrayOfPid = []) {
+	public function getAllPages ($pid, &$arrayOfPid = [])
+	{
 		$pages = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows('uid', 'pages', 'deleted = 0 AND hidden = 0 AND pid=' . $pid);
 		$arrayOfPid = array_merge($pages, $arrayOfPid);
 		if (count($pages) > 0) {
@@ -364,7 +324,7 @@ class Feed implements \TYPO3\CMS\Core\SingletonInterface {
 
 	/**
 	 * Return the closest header for a given content element.
-	 * This only works for tt_content table.
+	 * This only works for the table tt_content.
 	 *
 	 * @param	array		$row: SQL row whose title should be updated
 	 * @param	string		$clauseSQL: current SQL filtering clause
@@ -372,7 +332,8 @@ class Feed implements \TYPO3\CMS\Core\SingletonInterface {
 	 * @access	private
 	 * @return	string		Closest header for the given element
 	 */
-	public function updateClosestTitle (&$row, $clauseSQL, $sysLanguageUid = null) {
+	public function updateClosestTitle (&$row, $clauseSQL, $sysLanguageUid = null)
+	{
 		$clauseSQL .= ' AND pid=' . $row['pid'] . ' AND sorting < (SELECT sorting FROM tt_content WHERE uid=' . $row['uid'] . ') AND header != \'\'';
 		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('header', 'tt_content', $clauseSQL, '', 'sorting DESC', 1);
 		if ($result) {
@@ -408,7 +369,8 @@ class Feed implements \TYPO3\CMS\Core\SingletonInterface {
 	 * @param	integer		$sysLanguageUid: <tt>sys_language_uid</tt> when used in a multilingual context
 	 * @return	array		author name and email
 	 */
-	public function getAuthor( &$row, $sysLanguageUid = null) {
+	public function getAuthor( &$row, $sysLanguageUid = null)
+	{
 		$author = $author_email = '';
 
 		$clauseSQL = 'uid=' . $row['pid'];
@@ -435,7 +397,8 @@ class Feed implements \TYPO3\CMS\Core\SingletonInterface {
 	 * @param	integer		$pid: page id to be tested
 	 * @return	boolean		true if the page should not be disclosed to everybody
 	 */
-	public function isPageProtected ($pid) {
+	public function isPageProtected ($pid)
+	{
 		$clauseSQL = 'uid=' . $pid;
 		$table = 'pages';
 
