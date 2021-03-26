@@ -35,6 +35,10 @@ namespace JambageCom\Ecorss\Model;
 
  
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Resource\ResourceFactory;
+
+use JambageCom\Div2007\Utility\FileAbstractionUtility;
+
 
 
 class Feed implements \TYPO3\CMS\Core\SingletonInterface {
@@ -46,18 +50,28 @@ class Feed implements \TYPO3\CMS\Core\SingletonInterface {
 	 */
 	public function load ($configurations)
 	{
+		//init a few variables
 		$pidRootline = $configurations['pidRootline'];
 		$sysLanguageUid = isset($configurations['sysLanguageUid']) ? $configurations['sysLanguageUid'] : '';
 		$author = isset($configurations['author.']) ? $configurations['author.'] : '';
-		$limitSQL = isset($configurations['numberItems']) ? $configurations['numberItems'] : '10';
 		$entries = [];
 
 		$link = GeneralUtility::makeInstance('tx_div2007_link');
 		$link->noHash();
-        $databaseConfig = $configurations['select.'];
+		$databaseConfig = [];
+		if (isset($configurations['select.'])) {
+            $databaseConfig = $configurations['select.'];
+        }
+		$limitSQL = isset($configurations['numberItems']) ? intval($configurations['numberItems']) : '10';
+		if (!empty($databaseConfig)) {
+            $limitSQL = intval($limitSQL / count($databaseConfig) + 1);
+		}
         $baseUrl = GeneralUtility::getIndpEnv('TYPO3_SITE_URL');
+        if (isset($GLOBALS['TSFE']->tmpl->setup['config.']['baseURL'])) {
+            $baseUrl = $GLOBALS['TSFE']->tmpl->setup['config.']['baseURL'];
+        }
 
-		foreach ($databaseConfig as $config) {
+		foreach ($databaseConfig as $configKey => $config) {
 			// Initialize some variables
 			$summary = $title = '';
 
@@ -79,6 +93,7 @@ class Feed implements \TYPO3\CMS\Core\SingletonInterface {
 
 			/* PROCESS THE OTHER FIELDS */
 			$table = $config['table'] != '' ? $config['table'] : 'tt_content';
+			$image = isset($config['image']) ? $config['image'] : '';
 			$published = isset($config['published']) ? $config['published'] : 'tstamp';
 			$updated = isset($config['updated']) ? $config['updated'] : 'tstamp';
 			$uid = isset($config['uid']) ? $config['uid'] : 'uid';
@@ -89,10 +104,10 @@ class Feed implements \TYPO3\CMS\Core\SingletonInterface {
 			// Added possible author field thanks to Alexandre Morel
 			$authorSQL = isset($config['author']) ? ", " . $config['author'] . " as author" : '';
 
-			// Added possible extra fields thanks to Pierre Rossel
-			$extraFieldsSQL = isset($config['extraFields']) ? ", " . $config['extraFields'] : '';
+			// Added possible extra fields
+			$extraFieldsSQL = isset($config['extraFields']) ? ', ' . $config['extraFields'] : '';
 
-			$fieldSQL = $pid . ' as pid, ' . $uid . ' as uid, ' . $title . ' as title, ' . $summary . ' as summary, ' . $published . ' as published, ' . $updated . ' as updated' . $headerLayout . $authorSQL . $extraFieldsSQL;
+			$fieldSQL = $pid . ' as pid, ' . $uid . ' as uid, ' . $title . ' as title, ' . $summary . ' as summary, ' . ($image != '' ? $image . ' as image, ' : '') . $published . ' as published, ' . $updated . ' as updated' . $headerLayout . $authorSQL . $extraFieldsSQL;
 
 			/* PROCESS THE CLAUSE */
 			$clauseSQL = '1=1 ' . \JambageCom\Div2007\Utility\TableUtility::enableFields($table);
@@ -167,19 +182,32 @@ class Feed implements \TYPO3\CMS\Core\SingletonInterface {
 					}
 
 					// Handle the link
-					$linkItem = isset($config['linkItem']) ? $config['linkItem'].' ' : 1;
-
+					$linkItem = isset($config['linkItem']) ? $config['linkItem'] . ' ' : 1;
 					$url = '';
 					if ($linkItem == 'true' || $linkItem == 1) {
                         $parameters = [];
 						if ($table == 'tt_content') {	// standard content
 							$link->destination($row['pid']);
-						} elseif ($table == 'pages'){ // special content from user-configured table
+						} else if ($table == 'pages'){ // special content from user-configured table
                             $link->destination($row['uid']);
-						} else { // special content from user-configured table
+						} else if (isset($config['single_page.'])) { // special content from user-configured table
 							$linkConfig = $config['single_page.'];
 							$link->destination($linkConfig['pid']);
-							$parameters = [$linkConfig['linkParamUid'] => $row['uid'], 'no_cache' => '1'];
+							$parameters = [$linkConfig['linkParamUid'] => $row['uid']];
+							if (
+                                isset($linkConfig['linkParam']) &&
+                                $linkConfig['linkParam'] != ''
+                            ) {
+                                $parts = explode('=', $linkConfig['linkParam']);
+                                if (
+                                    is_array($parts) &&
+                                    count($parts) == 2
+                                ) {
+                                    $parameters[$parts['0']] = $parts['1'];
+                                }
+							}
+						} else {
+                            $link->destination($row['pid']);
 						}
 
 						if (isset($configurations['profileAjaxType'])) {
@@ -196,15 +224,17 @@ class Feed implements \TYPO3\CMS\Core\SingletonInterface {
 						if (isset($config['baseUrl']) && $config['baseUrl'] != '') {
 							$domain = $config['baseUrl'];
 						}
+						$parse = parse_url($domain);
+                        $linkDomain = $parse['scheme'] . '://' . $parse['host'];
 						// Gets the URL
-						$url = $domain . $link->makeUrl(false);
-
-						//handle the anchors
-						if (!isset($configurations['no_anchor'])) {
-							$configurations['no_anchor'] = 0;
+						$url = $linkDomain . $link->makeUrl(false);
+                        $no_anchor = 0;
+                                //handle the anchors
+						if (isset($config['no_anchor'])) {
+							$no_anchor = intval($config['no_anchor']);
 						}
-						if ($configurations['no_anchor'] != 1) {
-							$url .= '#c'.$row['uid'];
+						if (!$no_anchor) {
+							$url .= '#c' . $row['uid'];
 						}
 					}
 
@@ -214,7 +244,7 @@ class Feed implements \TYPO3\CMS\Core\SingletonInterface {
 					// Handle the index of the array
 					$uid = $row['uid'];
 					if (strlen($uid) < 5) {
-						$uid = str_pad($uid,5,'0');
+						$uid = str_pad($uid, 5, '0');
 					} else {
 						$uid = substr($uid, 0, 5);
 					}
@@ -234,23 +264,42 @@ class Feed implements \TYPO3\CMS\Core\SingletonInterface {
 						$author_name = $row['author'];
 						$author_email = '';
 					} else {
-						list($author_name, $author_email) = $this->getAuthor($row, $sysLanguageUid);
+						list($author_name, $author_email) =
+                            $this->getAuthor($row, $sysLanguageUid);
 					}
 
 					// Truncates the summary.
-					if(isset($config['truncate']) and $config['truncate'] > 0){
+					if(isset($config['truncate']) and $config['truncate'] > 0) {
 						$row['summary'] = $this->truncate($row['summary'], $config['truncate'], ' ...');
 					}
-
 					$entry = [
-						'title' => $defaultText .$row['title'],
+						'title' => $defaultText . $row['title'],
 						'updated' => $row['updated'],
 						'published' => $row['published'],
 						'summary' => $row['summary'],
 						'author' => $author_name,
 						'author_email' => $author_email,
-						'link' => $url
+						'link' => $url,
+						'domain' => $domain
 					];
+					
+					if (isset($row['image'])) {
+                       $imageUidRows =  FileAbstractionUtility::getFileRecords(
+                            $table,
+                            $config['image'],
+                            [$row['uid']]
+                        );
+
+                        if (!empty($imageUidRows)) {
+                            $imageUidRow = current($imageUidRows);
+                            $imageUid = $imageUidRow['uid_local'];
+                            $factory = GeneralUtility::makeInstance(ResourceFactory::class);
+                            $imageRecord = $factory->getFileObject($imageUid);
+                            if (!empty($imageRecord)) {
+                                $entry['image'] = $imageRecord->getProperties();
+                            }
+                        }
+					}
 
 					/* Hook that enable post processing the output) */
 					if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ecorss']['PostProcessingProc'])) {
@@ -265,17 +314,15 @@ class Feed implements \TYPO3\CMS\Core\SingletonInterface {
 						}
 					}
 
-					// Number of digit. This number should be verified. Prevent an error with big database.
-					// The order of the entries may be wrong in certain case. PHP expects an integer (32 bits) as index in an array but in big dataset, this number may exceed the integer
-					$entries[(int)($row['updated'] / 100000) . $uid] = $entry;
+					$key = $row['updated'] . sprintf('%06s', $uid);
+					$entries[$key] = $entry;
 				}
 			}
 			// Sort decreasingly in case it is a union of different arrays
 			krsort($entries, SORT_NUMERIC);
 		}
 
-		$result = array_splice($entries, 0, $limitSQL);
-		return $result;
+		return $entries;
 	}
 
 	/**
@@ -347,7 +394,7 @@ class Feed implements \TYPO3\CMS\Core\SingletonInterface {
 				$clauseSQL = 'uid=' . $row['pid'];
 				if ($sysLanguageUid != null && $sysLanguageUid > 0) {
 					$table = 'pages_language_overlay';
-					$clauseSQL .= ' AND sys_language_uid=' . $sysLanguageUid;
+					$clauseSQL .= ' AND sys_language_uid=' . intval($sysLanguageUid);
 				}
 
 				$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('title', $table, $clauseSQL);
@@ -399,7 +446,7 @@ class Feed implements \TYPO3\CMS\Core\SingletonInterface {
 	 */
 	public function isPageProtected ($pid)
 	{
-		$clauseSQL = 'uid=' . $pid;
+		$clauseSQL = 'uid=' . intval($pid);
 		$table = 'pages';
 
 		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('perms_everybody', $table, $clauseSQL);

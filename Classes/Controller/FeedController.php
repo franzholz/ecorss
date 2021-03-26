@@ -45,7 +45,8 @@ class FeedController {
 	 * @param	array	$configurations: Plugin configuration
 	 * @access	public
 	 */
-	public function add ($content, $configurations) {
+	public function add ($content, $configurations)
+	{
 		$htmlHeader = '';
 		//loop around the feed
 		foreach ($configurations as $config) {
@@ -69,7 +70,7 @@ class FeedController {
 					$feedURL = $this->cObj->getTypoLink_URL($rootPid, array('type' => $config['typeNum']));
 
 					# Define the <link>
-					$htmlHeader .= '<link rel="alternate" type="' . $feed . '" title="'.$title . '" href="' . $feedURL . '" />' . chr(10);
+					$htmlHeader .= '<link rel="alternate" type="' . $feed . '" title="' . $title . '" href="' . $feedURL . '" />' . chr(10);
 				} else {
                     throw new \RuntimeException(
 '<div style="color:red"><b>plugin ecorss error</b>Parameter typeNum is missing in TypoScript. Try something like this in setup: page.headerData.xxx.myFeed.typeNum = yyy'.'</div>');
@@ -95,7 +96,8 @@ class FeedController {
 	 * @param	array	$configurations: Plugin configuration
 	 * @access	public
 	 */
-	public function display ($content, $configurations) {
+	public function display ($content, $configurations)
+	{
 		$TSconfig = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_ecorss.']['controller.']['feed.'];
 
 		if($TSconfig === null){
@@ -119,7 +121,7 @@ class FeedController {
         if (isset($configurations['configurations.'])) {
             $configurations = $configurations['configurations.'];
         }
-        $cacheContent = null;
+		$cacheContent = null;
 		$output = '';
 
 		// Cache mechanism

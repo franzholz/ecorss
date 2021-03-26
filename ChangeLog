@@ -1,3 +1,8 @@
+2021-03-26 Franz Holzinger <franz@ttproducts.de>
+    * new feature additional parameter: single_page.linkParam = no_cache=1. no_cache is not added automatically any more. You can build your extension based on USER_INT.
+    
+2021-03-24 Franz Holzinger <franz@ttproducts.de>
+    * new feature image: A FAL record o an image is included as enclosure in the RSS feed.
 
 2021-03-23 Franz Holzinger <franz@ttproducts.de>
     * remove feature multidomain: No domain records are available any more. Use a TYPO3 link method instead of the current link generation in the future, if this feature is needed again.

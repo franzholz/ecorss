@@ -32,31 +32,79 @@ namespace JambageCom\Ecorss\View;
  * @subpackage ecorss
  */
 
+ 
+use Symfony\Component\Mime\MimeTypes;
+
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 use JambageCom\Div2007\Utility\FrontendUtility;
 
 class View implements \TYPO3\CMS\Core\SingletonInterface {
-
-// tx_div2007_phpTemplateEngine {
-
     public $entries;
     public $data;
     public $parseFunc;
     private $cObj;
+    private static $mimeTypes;
 
     public function __construct ($entries, $data, $parseFunc) {
         $this->entries = $entries;
         $this->data = $data;
         $this->parseFunc = $parseFunc;
         $this->cObj = GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer::class);
+        self::$mimeTypes = new MimeTypes();
     }
-    
+
+    /**
+    * Print the media enclosure
+    * @param	array		row of data
+    */
+    public function printEnclosure (array $entry = [])
+    {
+		$baseUrl = $entry['domain'];
+
+		if($baseUrl) {
+            $imageUrl = '';
+            $imagePath = '';
+            $bytes = 0;
+            $contentType = '';
+
+            if (
+                isset($entry['image']) &&
+                !empty($entry['image'])
+            ) {
+                $imageUrl = $entry['domain'] . 'fileadmin' . $entry['image']['identifier'];
+                $bytes = $entry['image']['size'];
+                $contentType = $entry['image']['mime_type'];
+            } else {
+                // parse images
+                preg_match_all('/<img.*?src=[\'"](.*?)[\'"].*?>/i', $this->asRaw('summary', $entry), $matches);
+                if (!empty($matches)) {
+                    $elements = $matches[1];
+                    if (!empty($elements)) {
+                        $imageUrl = $elements['0'];
+                        if ($imageUrl != '') {
+                            $imagePath = PATH_site . str_replace($data['host'], '', $imageUrl);
+                            $ext = pathinfo($imagePath, PATHINFO_EXTENSION);
+                            $bytes = filesize($imagePath);
+                            $contentType = self::$mimeTypes->getMimeTypes($ext[0]);
+                        }
+                    }
+                }
+            }
+
+            if ($imageUrl != '') {                
+                $content = '<enclosure url="' . $imageUrl . '" length="' . $bytes . '" type="' . $contentType . '"/>';
+                echo $content;
+            }
+        }
+    }
+
 	/**
 	 * Print the feed's summary.
     * @param	array		row of data
 	 */
-	public function printSummary (array $entry = []) {
+	public function printSummary (array $entry = [])
+	{
 		// Remove script-tags from content
 		$pattern[] = '/<( *)script([^>]*)type( *)=( *)([^>]*)>(.*)<\/( *)script( *)>/isU';
 		$replace[] = '';
@@ -70,15 +118,15 @@ class View implements \TYPO3\CMS\Core\SingletonInterface {
 		$replace[] = '""';
 
 		// Replaces baseURL link
-		$baseURL = $GLOBALS['TSFE']->tmpl->setup['config.']['baseURL'];
-		if($baseURL) {
+		$baseUrl = $GLOBALS['TSFE']->tmpl->setup['config.']['baseURL'];
+		if($baseUrl) {
 			// Replace links
 			$pattern[] = "/<a([^>]*) href=\"([^http|ftp|https][^\"]*)\"/isU";
-			$replace[] = "<a\${1} href=\"" . $baseURL . "\${2}\"";
+			$replace[] = "<a\${1} href=\"" . $baseUrl . "\${2}\"";
 
 			// Replace images
 			$pattern[] = "/<img([^>]*) src=\"([^http|ftp|https][^\"]*)\"/";
-			$replace[] = "<img\${1} src=\"" . $baseURL . "\${2}\" alt=\${2}";
+			$replace[] = "<img\${1} src=\"" . $baseUrl . "\${2}\" alt=\${2}";
 		}
 
 		$content = preg_replace($pattern, $replace, FrontendUtility::RTEcssText($this->cObj, $this->asRaw('summary', $entry)));
@@ -90,7 +138,8 @@ class View implements \TYPO3\CMS\Core\SingletonInterface {
 	 * Print the current url of the page.
      * @param	array		row of data
 	 */
-	public function printUrl () {
+	public function printUrl ()
+	{
 		print $this->asRaw('host');
 		$url = $this->asText('url');
 		$pattern[] = '/\?clear_cache=1/isU';
@@ -122,7 +171,8 @@ class View implements \TYPO3\CMS\Core\SingletonInterface {
     * @return	mixed		parsed string
     * @see		asHtml()
     */
-    public function asText ($key, array $entry = []) {
+    public function asText ($key, array $entry = [])
+    {
         $setup = [];
         if(is_array($this->parseFunc)) {
             $setup['parseFunc.'] = $this->parseFunc;

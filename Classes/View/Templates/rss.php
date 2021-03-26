@@ -11,6 +11,7 @@
 		<item>
 			<title><?php $this->printAsText('title', $entry) ?></title>
 			<link><?php print htmlspecialchars($this->asRaw('link', $entry)) ?></link>
+			<?php $this->printEnclosure($entry) ?>
 			<description><?php $this->printSummary($entry) ?></description>
 			<pubDate><?php print date('r', $this->asText('published', $entry)) ?></pubDate>
 			<guid><?php print htmlspecialchars($this->asRaw('link', $entry)) ?></guid>
