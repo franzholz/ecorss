@@ -1,4 +1,7 @@
 2021-03-26 Franz Holzinger <franz@ttproducts.de>
+    * compatibility TYPO3 10: replace GeneralUtility::getIndpEnv by pendants from $GLOBALS['TYPO3_REQUEST']->getAttribute('normalizedParams').
+
+2021-03-26 Franz Holzinger <franz@ttproducts.de>
     * new feature additional parameter: single_page.linkParam = no_cache=1. no_cache is not added automatically any more. You can build your extension based on USER_INT.
     
 2021-03-24 Franz Holzinger <franz@ttproducts.de>

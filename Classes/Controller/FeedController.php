@@ -126,6 +126,7 @@ class FeedController {
 
 		// Cache mechanism
         $cacheFrontend = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Cache\CacheManager::class)->getCache('cache_hash');
+        $normalizedParams = $GLOBALS['TYPO3_REQUEST']->getAttribute('normalizedParams');
 
 		$hash = md5(serialize($configurations) . $GLOBALS['TSFE']->type);
 		$cacheId = 'Ecorss-Feed-' . $GLOBALS['TSFE']->type;
@@ -155,14 +156,14 @@ class FeedController {
             $data['title'] = $configurations['title'];
             $data['subtitle'] = $configurations['subtitle'];
             $data['lang'] = isset($configurations['lang']) ? $configurations['lang'] : 'en-GB';
-            $data['host'] = isset($configurations['host']) ? $configurations['host'] : GeneralUtility::getIndpEnv('TYPO3_SITE_URL');
+            $data['host'] = isset($configurations['host']) ? $configurations['host'] : $normalizedParams->getSiteUrl(); //    GeneralUtility::getIndpEnv('TYPO3_SITE_URL')
 
             // Sanitize the host's value
             if (
                 strpos(
                 $data['host'],
-                'http' . (GeneralUtility::getIndpEnv('TYPO3_SSL') ? 's' : '') . '://'
-                ) !== 0
+                'http' . ( $normalizedParams->isHttps() ? 's' : '') . '://'
+                ) !== 0   // GeneralUtility::getIndpEnv('TYPO3_SSL') 
             ) {
                 $data['host'] = 'https://' . $data['host'];
             }
@@ -170,7 +171,7 @@ class FeedController {
                 $data['host'] = substr($data['host'], 0, strlen($data['host']) - 1);
             }
 
-            $data['url'] = GeneralUtility::getIndpEnv('REQUEST_URI');
+            $data['url'] = $normalizedParams->getRequestUri(); // GeneralUtility::getIndpEnv('REQUEST_URI');
             $entries = $model->load($configurations);
 
             // ... and the view
