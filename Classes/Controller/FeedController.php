@@ -37,6 +37,10 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
 class FeedController {
+	/**
+	 * @var \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer
+	 */
+	public $cObj;
 
 	/**
 	 * Add a feed to the HTML header. Typically it is a link like <link rel="alternate" type="application/atom+xml" title="..." href="..." />
@@ -163,7 +167,7 @@ class FeedController {
                 strpos(
                 $data['host'],
                 'http' . ( $normalizedParams->isHttps() ? 's' : '') . '://'
-                ) !== 0   // GeneralUtility::getIndpEnv('TYPO3_SSL') 
+                ) !== 0   // GeneralUtility::getIndpEnv('TYPO3_SSL')
             ) {
                 $data['host'] = 'https://' . $data['host'];
             }
@@ -180,7 +184,7 @@ class FeedController {
                 $entries,
                 $data,
                 (isset($configurations['parseFunc.']) ? $configurations['parseFunc.'] : $configurations['parseFunc'])
-            );    
+            );
             $template = '';
             $pathTemplateDirectory = $configurations['pathToTemplateDirectory'];
 
