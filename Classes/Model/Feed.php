@@ -33,15 +33,16 @@ namespace JambageCom\Ecorss\Model;
  * @subpackage ecorss
  */
 
- 
+
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
+use TYPO3\CMS\Core\SingletonInterface;
 
 use JambageCom\Div2007\Utility\FileAbstractionUtility;
+use JambageCom\Div2007\Utility\FrontendUtility;
 
 
-
-class Feed implements \TYPO3\CMS\Core\SingletonInterface {
+class Feed implements SingletonInterface {
 
 	/**
 	 * Initialize the modem, parse the TS configuration and prepare the list of updated pages for the feed.
@@ -51,13 +52,12 @@ class Feed implements \TYPO3\CMS\Core\SingletonInterface {
 	public function load ($configurations)
 	{
 		//init a few variables
-		$pidRootline = $configurations['pidRootline'];
-		$sysLanguageUid = isset($configurations['sysLanguageUid']) ? $configurations['sysLanguageUid'] : '';
-		$author = isset($configurations['author.']) ? $configurations['author.'] : '';
+		$cObj = GeneralUtility::makeInstance(ContentObjectRenderer::class);
+		$pidRootline = $configurations['pidRootline'] ?? '';
+		$sysLanguageUid = $configurations['sysLanguageUid'] ?? '';
+		$author = $configurations['author.']) ?? '';
 		$entries = [];
 
-		$link = GeneralUtility::makeInstance('tx_div2007_link');
-		$link->noHash();
 		$databaseConfig = [];
 		if (isset($configurations['select.'])) {
             $databaseConfig = $configurations['select.'];
@@ -66,10 +66,6 @@ class Feed implements \TYPO3\CMS\Core\SingletonInterface {
 		if (!empty($databaseConfig)) {
             $limitSQL = intval($limitSQL / count($databaseConfig) + 1);
 		}
-        $baseUrl = GeneralUtility::getIndpEnv('TYPO3_SITE_URL');
-        if (isset($GLOBALS['TSFE']->tmpl->setup['config.']['baseURL'])) {
-            $baseUrl = $GLOBALS['TSFE']->tmpl->setup['config.']['baseURL'];
-        }
 
 		foreach ($databaseConfig as $configKey => $config) {
 			// Initialize some variables
@@ -180,6 +176,7 @@ class Feed implements \TYPO3\CMS\Core\SingletonInterface {
 					if ($this->isPageProtected($row['pid'])) {
 						continue;
 					}
+					$linkDestination = '';
 
 					// Handle the link
 					$linkItem = isset($config['linkItem']) ? $config['linkItem'] . ' ' : 1;
@@ -187,13 +184,13 @@ class Feed implements \TYPO3\CMS\Core\SingletonInterface {
 					if ($linkItem == 'true' || $linkItem == 1) {
                         $parameters = [];
 						if ($table == 'tt_content') {	// standard content
-							$link->destination($row['pid']);
-						} else if ($table == 'pages'){ // special content from user-configured table
-                            $link->destination($row['uid']);
+							$linkDestination = $row['pid'];
+						} else if ($table == 'pages') { // special content from user-configured table
+                            $linkDestination = $row['uid'];
 						} else if (isset($config['single_page.'])) { // special content from user-configured table
 							$linkConfig = $config['single_page.'];
-							$link->destination($linkConfig['pid']);
-							$parameters = [$linkConfig['linkParamUid'] => $row['uid']];
+							$linkDestination = $linkConfig['pid'] ?? 0;
+							$parameters = [$linkConfig['linkParamUid'] ?? '' => $row['uid']];
 							if (
                                 isset($linkConfig['linkParam']) &&
                                 $linkConfig['linkParam'] != ''
@@ -203,11 +200,11 @@ class Feed implements \TYPO3\CMS\Core\SingletonInterface {
                                     is_array($parts) &&
                                     count($parts) == 2
                                 ) {
-                                    $parameters[$parts['0']] = $parts['1'];
+                                    $parameters[$parts[0]] = $parts[1];
                                 }
 							}
 						} else {
-                            $link->destination($row['pid']);
+                            $linkDestination = $row['pid'];
 						}
 
 						if (isset($configurations['profileAjaxType'])) {
@@ -217,17 +214,15 @@ class Feed implements \TYPO3\CMS\Core\SingletonInterface {
 							);
 						}
 
-						$link->parameters($parameters);
-                        $domain = $baseUrl;
+						$url =
+							FrontendUtility::getTypoLink_URL(
+								$cObj,
+								$linkDestination,
+								$parameters,
+								'',
+								[]
+							);
 
-						// domain may be something else. Look for it
-						if (isset($config['baseUrl']) && $config['baseUrl'] != '') {
-							$domain = $config['baseUrl'];
-						}
-						$parse = parse_url($domain);
-                        $linkDomain = $parse['scheme'] . '://' . $parse['host'];
-						// Gets the URL
-						$url = $linkDomain . $link->makeUrl(false);
                         $no_anchor = 0;
                                 //handle the anchors
 						if (isset($config['no_anchor'])) {
@@ -282,7 +277,7 @@ class Feed implements \TYPO3\CMS\Core\SingletonInterface {
 						'link' => $url,
 						'domain' => $domain
 					];
-					
+
 					if (isset($row['image'])) {
                        $imageUidRows =  FileAbstractionUtility::getFileRecords(
                             $table,
@@ -314,7 +309,7 @@ class Feed implements \TYPO3\CMS\Core\SingletonInterface {
 						}
 					}
 
-					$key = $row['updated'] . sprintf('%06s', $uid);
+					$key = (int) $row['updated'] . sprintf('%06s', $uid);
 					$entries[$key] = $entry;
 				}
 			}
@@ -416,7 +411,7 @@ class Feed implements \TYPO3\CMS\Core\SingletonInterface {
 	 * @param	integer		$sysLanguageUid: <tt>sys_language_uid</tt> when used in a multilingual context
 	 * @return	array		author name and email
 	 */
-	public function getAuthor( &$row, $sysLanguageUid = null)
+	public function getAuthor( $row, $sysLanguageUid = null)
 	{
 		$author = $author_email = '';
 
@@ -433,7 +428,9 @@ class Feed implements \TYPO3\CMS\Core\SingletonInterface {
 			$author_email = $row2['author_email'];
 		}
 
-		if (empty($author)) $author = 'anonymous';
+		if (empty($author)) {
+			$author = 'anonymous';
+		}
 
 		return [$author, $author_email];
 	}
