@@ -34,6 +34,7 @@ namespace JambageCom\Ecorss\Controller;
  */
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 
 class FeedController {
@@ -41,6 +42,11 @@ class FeedController {
 	 * @var \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer
 	 */
 	public $cObj;
+
+	public function __construct () {
+
+		$this->cObj = GeneralUtility::makeInstance(ContentObjectRenderer::class);
+	}
 
 	/**
 	 * Add a feed to the HTML header. Typically it is a link like <link rel="alternate" type="application/atom+xml" title="..." href="..." />
@@ -153,7 +159,6 @@ class FeedController {
         if (!empty($cacheContent)) {
             $output = $cacheContent;
         } else {
-            $sanitizer = GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\Resource\FilePathSanitizer::class);
             // Finding class-names
             $model = GeneralUtility::makeInstance(\JambageCom\Ecorss\Model\Feed::class);
             $data = [];
@@ -197,7 +202,7 @@ class FeedController {
                     $template = $pathTemplateDirectory . '/' .  $configurations['atomTemplate'];
                     break;
             }
-            $template = $sanitizer->sanitize($template);
+            $template = GeneralUtility::getFileAbsFileName($template);
             $encoding = isset($configurations['encoding']) ? $configurations['encoding'] : 'UTF-8';
             $output = '<?xml version="1.0" encoding="' . $encoding . '" ?>' . chr(10);
             $output .= $view->render($template);
