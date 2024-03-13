@@ -37,6 +37,7 @@ namespace JambageCom\Ecorss\Model;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\SingletonInterface;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 use JambageCom\Div2007\Utility\FileAbstractionUtility;
 use JambageCom\Div2007\Utility\FrontendUtility;
@@ -55,7 +56,7 @@ class Feed implements SingletonInterface {
 		$cObj = GeneralUtility::makeInstance(ContentObjectRenderer::class);
 		$pidRootline = $configurations['pidRootline'] ?? '';
 		$sysLanguageUid = $configurations['sysLanguageUid'] ?? '';
-		$author = $configurations['author.']) ?? '';
+		$author = $configurations['author.'] ?? '';
 		$entries = [];
 
 		$databaseConfig = [];

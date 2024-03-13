@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+	<file source-language="en" datatype="plaintext" original="EXT:ecorss/Resources/Private/Language/locallang.xlf" date="2024-03-13T13:49:48Z" product-name="ecorss">
+		<header/>
+		<body>
+			<trans-unit id="mvc1_title" resname="mvc1_title" >
+				<source>ecorss</source>
+			</trans-unit>
+			<trans-unit id="mvc1_plus_wiz_description" resname="mvc1_plus_wiz_description" >
+				<source>ecorss</source>
+			</trans-unit>
+			<trans-unit id="first_name" resname="first_name" >
+				<source>First name:</source>
+			</trans-unit>
+			<trans-unit id="last_name" resname="last_name" >
+				<source>Last name:</source>
+			</trans-unit>
+			<trans-unit id="email" resname="email" >
+				<source>Email:</source>
+			</trans-unit>
+			<trans-unit id="sendButton" resname="sendButton" >
+				<source>Send</source>
+			</trans-unit>
+			<trans-unit id="resetButton" resname="resetButton" >
+				<source>Reset</source>
+			</trans-unit>
+			<trans-unit id="addAddress" resname="addAddress" >
+				<source>Add a new address:</source>
+			</trans-unit>
+			<trans-unit id="updateAddress" resname="updateAddress" >
+				<source>Update / delete an address:</source>
+			</trans-unit>
+			<trans-unit id="insertEmail" resname="insertEmail" >
+				<source>Insert your email, please:</source>
+			</trans-unit>
+			<trans-unit id="confirmEmail" resname="confirmEmail" >
+				<source>Un email de confirmation vient de vous être envoyé.</source>
+			</trans-unit>
+			<trans-unit id="emptyFirstNameError" resname="emptyFirstNameError" >
+				<source>First name&#039;s value is empty :</source>
+			</trans-unit>
+			<trans-unit id="emptyLastNameError" resname="emptyLastNameError" >
+				<source>Last name&#039;s value is empty :</source>
+			</trans-unit>
+			<trans-unit id="emptyEmailError" resname="emptyEmailError" >
+				<source>Email&#039;s value empty :</source>
+			</trans-unit>
+			<trans-unit id="formError" resname="formError" >
+				<source>More informations needed</source>
+			</trans-unit>
+			<trans-unit id="invalidEmailError" resname="invalidEmailError" >
+				<source>Email format invalid :</source>
+			</trans-unit>
+			<trans-unit id="formOK1" resname="formOK1" >
+				<source>We receive your subscription successfuly.</source>
+			</trans-unit>
+			<trans-unit id="formOK2" resname="formOK2" >
+				<source>An email has been sent</source>
+			</trans-unit>
+			<trans-unit id="formOK3" resname="formOK3" >
+				<source>Please, read the email in order to confirm your subscription.</source>
+			</trans-unit>
+			<trans-unit id="formUpdateUserOK1" resname="formUpdateUserOK1" >
+				<source>An email has been sent.</source>
+			</trans-unit>
+			<trans-unit id="formUpdateUserOK2" resname="formUpdateUserOK2" >
+				<source>Please, read it and follow the instructions.</source>
+			</trans-unit>
+			<trans-unit id="backButton" resname="backButton" >
+				<source>Back</source>
+			</trans-unit>
+			<trans-unit id="existsEmailError" resname="existsEmailError" >
+				<source>Email already exists:</source>
+			</trans-unit>
+			<trans-unit id="notExistsEmailError" resname="notExistsEmailError" >
+				<source>This email does not exist :</source>
+			</trans-unit>
+			<trans-unit id="emailSubjectAddUser" resname="emailSubjectAddUser" >
+				<source>Confirm your subscription, please.</source>
+			</trans-unit>
+			<trans-unit id="emailSubjectUpdateUser" resname="emailSubjectUpdateUser" >
+				<source>Update your subscription.</source>
+			</trans-unit>
+			<trans-unit id="updateButton" resname="updateButton" >
+				<source>Update</source>
+			</trans-unit>
+			<trans-unit id="yesButton" resname="yesButton" >
+				<source>Yes</source>
+			</trans-unit>
+			<trans-unit id="noButton" resname="noButton" >
+				<source>No</source>
+			</trans-unit>
+			<trans-unit id="subscriptionConfirmed" resname="subscriptionConfirmed" >
+				<source>Your subscription is confirmed.</source>
+			</trans-unit>
+			<trans-unit id="subscriptionHello" resname="subscriptionHello" >
+				<source>Hello</source>
+			</trans-unit>
+			<trans-unit id="subscriptionText1" resname="subscriptionText1" >
+				<source>You will receive our next newsletter.</source>
+			</trans-unit>
+			<trans-unit id="subscriptionText2" resname="subscriptionText2" >
+				<source>You can edit or delete your subscription at any time :</source>
+			</trans-unit>
+			<trans-unit id="deleteConfirmation" resname="deleteConfirmation" >
+				<source>Are you sure you want to delete your subscription</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>
