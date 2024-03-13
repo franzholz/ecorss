@@ -24,8 +24,8 @@
   ],
   "require": {
     "php": "^7.1",
-    "typo3/cms-core": "^9.5,^10.4",
-    "jambagecom/div2007": "^1.11.5"
+    "typo3/cms-core": "^11.5 || ^12.4",
+    "jambagecom/div2007": "^1.17 || ^2.0"
   },
   "suggest": {
     "friendsoftypo3/typo3db-legacy": "^1"
