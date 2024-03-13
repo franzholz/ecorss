@@ -7,7 +7,7 @@ call_user_func(function ($extensionKey, $table): void {
     $temporaryColumns = [
         'tx_ecorss_excludeFromFeed' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:ecorss/locallang_db.xml:excludeFromFeed',
+            'label' => 'LLL:EXT:' . $extensionKey . $languageSubpath . 'locallang_db.xlf:excludeFromFeed',
             'config' => [
                 'type' => 'check',
                 "default" => "1",
@@ -29,7 +29,7 @@ call_user_func(function ($extensionKey, $table): void {
 
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(
         [
-            'LLL:EXT:' . $extensionKey . '/locallang_db.xml:tt_content.list_type_pi1',
+            'LLL:EXT:' . $extensionKey . $languageSubpath . 'locallang_db.xlf:tt_content.list_type_pi1',
             $listType,
             'EXT:' . $extensionKey . '/ext_icon.gif'
         ],
