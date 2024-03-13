@@ -32,10 +32,12 @@ namespace JambageCom\Ecorss\View;
  * @subpackage ecorss
  */
 
- 
+
 use Symfony\Component\Mime\MimeTypes;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use JambageCom\Ecorss\Api\FeedApi;
+
 
 use JambageCom\Div2007\Utility\FrontendUtility;
 
@@ -92,7 +94,7 @@ class View implements \TYPO3\CMS\Core\SingletonInterface {
                 }
             }
 
-            if ($imageUrl != '') {                
+            if ($imageUrl != '') {
                 $content = '<enclosure url="' . $imageUrl . '" length="' . $bytes . '" type="' . $contentType . '"/>';
                 echo $content;
             }
@@ -130,7 +132,7 @@ class View implements \TYPO3\CMS\Core\SingletonInterface {
 		}
 
 		$content = preg_replace($pattern, $replace, FrontendUtility::RTEcssText($this->cObj, $this->asRaw('summary', $entry)));
-    
+
 		print '<![CDATA[' . $content . ']]>';
 	}
 
@@ -149,9 +151,9 @@ class View implements \TYPO3\CMS\Core\SingletonInterface {
 		print preg_replace($pattern, $replace, $url);
 	}
 
-    public function render ($template) 
+    public function render ($template)
     {
-		ob_start();                                                             
+		ob_start();
 		// Run the template ...
 		include_once($template);
 		$out = ob_get_clean();
@@ -186,7 +188,7 @@ class View implements \TYPO3\CMS\Core\SingletonInterface {
         $result = $this->cObj->cObjGetSingle('TEXT', $setup);
         return $result;
     }
-    
+
 	/**
 	 * Print a raw value from the internal data array by key.
 	 *
@@ -201,18 +203,18 @@ class View implements \TYPO3\CMS\Core\SingletonInterface {
         if (!empty($entry) && !empty($entry[$key])) {
             $result = $entry[$key];
         } else {
-            $result = $this->data[$key];            
+            $result = $this->data[$key];
         }
-        
+
         return $result;
     }
 
-    public function printAsRaw ($key, array $entry = []) 
+    public function printAsRaw ($key, array $entry = [])
     {
         print $this->asRaw($key, $entry);
     }
 
-    public function printAsText ($key, array $entry = []) 
+    public function printAsText ($key, array $entry = [])
     {
         print $this->asText($key, $entry);
     }

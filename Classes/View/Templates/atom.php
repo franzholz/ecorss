@@ -5,7 +5,7 @@
 	<id><?php $this->printUrl() ?></id>
 	<updated><?php print date('c') ?></updated>
 
-	<generator uri="http://typo3.org" version="<?php echo tx_div2007_core::getTypoVersion(); ?>">TYPO3 - Open Source Content Management</generator>
+	<generator uri="http://typo3.org" version="<?php echo \JambageCom\Ecorss\Api\FeedApi::getTypo3Version(); ?>">TYPO3 - Open Source Content Management</generator>
 	<link rel="self" type="application/atom+xml" href="<?php $this->printUrl() ?>" />
 	<?php foreach($this->entries as $entry): ?>
 	<entry>
