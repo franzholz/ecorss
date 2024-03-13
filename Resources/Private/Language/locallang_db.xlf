@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+	<file source-language="en" datatype="plaintext" original="EXT:ecorss/Resources/Private/Language/locallang.xlf" date="2024-03-13T13:49:57Z" product-name="ecorss">
+		<header/>
+		<body>
+			<trans-unit id="tt_content.list_type_pi1" resname="tt_content.list_type_pi1" >
+				<source>ecorss</source>
+			</trans-unit>
+			<trans-unit id="excludeFromFeed" resname="excludeFromFeed" >
+				<source>Exclude content from RSS feed:</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>
