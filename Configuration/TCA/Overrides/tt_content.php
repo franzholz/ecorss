@@ -1,8 +1,8 @@
 <?php
 defined('TYPO3') || die('Access denied.');
 
-call_user_func(function () {
-    $table = 'tt_content';
+call_user_func(function ($extensionKey, $table): void {
+    $languageSubpath = '/Resources/Private/Language/';
 
     $temporaryColumns = [
         'tx_ecorss_excludeFromFeed' => [
@@ -25,7 +25,6 @@ call_user_func(function () {
     );
 
     $listType = 'tx_ecorss_controllers_feed';
-    $extensionKey = 'ecorss';
     $GLOBALS['TCA'][$table]['types']['list']['subtypes_excludelist'][$listType] = 'layout,select_key';
 
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(
@@ -37,5 +36,4 @@ call_user_func(function () {
         'list_type',
         $extensionKey
     );
-});
-
+}, 'ecorss', basename(__FILE__, '.php'));
