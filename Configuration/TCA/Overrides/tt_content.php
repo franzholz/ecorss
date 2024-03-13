@@ -1,5 +1,5 @@
 <?php
-defined('TYPO3_MODE') || die('Access denied.');
+defined('TYPO3') || die('Access denied.');
 
 call_user_func(function () {
     $table = 'tt_content';
@@ -15,15 +15,15 @@ call_user_func(function () {
         ],
     ];
     $columns = array_keys($temporaryColumns);
-    
+
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns($table, $temporaryColumns);
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes(
         $table,
         implode(',', $columns),
-        '', 
+        '',
         'after:hidden'
     );
-    
+
     $listType = 'tx_ecorss_controllers_feed';
     $extensionKey = 'ecorss';
     $GLOBALS['TCA'][$table]['types']['list']['subtypes_excludelist'][$listType] = 'layout,select_key';
