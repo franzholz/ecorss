@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="en" datatype="plaintext" original="EXT:ecorss/Resources/Private/Language/locallang.xlf" date="2024-03-13T13:49:48Z" product-name="ecorss" target-language="uk">
+    <header/>
+    <body>
+      <trans-unit id="mvc1_title" resname="mvc1_title">
+        <source>ecorss</source>
+        <target state="needs-translation">ecorss</target>
+      </trans-unit>
+      <trans-unit id="mvc1_plus_wiz_description" resname="mvc1_plus_wiz_description">
+        <source>ecorss</source>
+        <target state="needs-translation">ecorss</target>
+      </trans-unit>
+      <trans-unit id="first_name" resname="first_name">
+        <source>First name:</source>
+        <target state="needs-translation">First name:</target>
+      </trans-unit>
+      <trans-unit id="last_name" resname="last_name">
+        <source>Last name:</source>
+        <target state="needs-translation">Last name:</target>
+      </trans-unit>
+      <trans-unit id="email" resname="email">
+        <source>Email:</source>
+        <target state="needs-translation">Email:</target>
+      </trans-unit>
+      <trans-unit id="sendButton" resname="sendButton">
+        <source>Send</source>
+        <target state="needs-translation">Send</target>
+      </trans-unit>
+      <trans-unit id="resetButton" resname="resetButton">
+        <source>Reset</source>
+        <target state="needs-translation">Reset</target>
+      </trans-unit>
+      <trans-unit id="addAddress" resname="addAddress">
+        <source>Add a new address:</source>
+        <target state="needs-translation">Add a new address:</target>
+      </trans-unit>
+      <trans-unit id="updateAddress" resname="updateAddress">
+        <source>Update / delete an address:</source>
+        <target state="needs-translation">Update / delete an address:</target>
+      </trans-unit>
+      <trans-unit id="insertEmail" resname="insertEmail">
+        <source>Insert your email, please:</source>
+        <target state="needs-translation">Insert your email, please:</target>
+      </trans-unit>
+      <trans-unit id="confirmEmail" resname="confirmEmail">
+        <source>Un email de confirmation vient de vous être envoyé.</source>
+        <target state="needs-translation">Un email de confirmation vient de vous être envoyé.</target>
+      </trans-unit>
+      <trans-unit id="emptyFirstNameError" resname="emptyFirstNameError">
+        <source>First name's value is empty :</source>
+        <target state="needs-translation">First name's value is empty :</target>
+      </trans-unit>
+      <trans-unit id="emptyLastNameError" resname="emptyLastNameError">
+        <source>Last name's value is empty :</source>
+        <target state="needs-translation">Last name's value is empty :</target>
+      </trans-unit>
+      <trans-unit id="emptyEmailError" resname="emptyEmailError">
+        <source>Email's value empty :</source>
+        <target state="needs-translation">Email's value empty :</target>
+      </trans-unit>
+      <trans-unit id="formError" resname="formError">
+        <source>More informations needed</source>
+        <target state="needs-translation">More informations needed</target>
+      </trans-unit>
+      <trans-unit id="invalidEmailError" resname="invalidEmailError">
+        <source>Email format invalid :</source>
+        <target state="needs-translation">Email format invalid :</target>
+      </trans-unit>
+      <trans-unit id="formOK1" resname="formOK1">
+        <source>We receive your subscription successfuly.</source>
+        <target state="needs-translation">We receive your subscription successfuly.</target>
+      </trans-unit>
+      <trans-unit id="formOK2" resname="formOK2">
+        <source>An email has been sent</source>
+        <target state="needs-translation">An email has been sent</target>
+      </trans-unit>
+      <trans-unit id="formOK3" resname="formOK3">
+        <source>Please, read the email in order to confirm your subscription.</source>
+        <target state="needs-translation">Please, read the email in order to confirm your subscription.</target>
+      </trans-unit>
+      <trans-unit id="formUpdateUserOK1" resname="formUpdateUserOK1">
+        <source>An email has been sent.</source>
+        <target state="needs-translation">An email has been sent.</target>
+      </trans-unit>
+      <trans-unit id="formUpdateUserOK2" resname="formUpdateUserOK2">
+        <source>Please, read it and follow the instructions.</source>
+        <target state="needs-translation">Please, read it and follow the instructions.</target>
+      </trans-unit>
+      <trans-unit id="backButton" resname="backButton">
+        <source>Back</source>
+        <target state="needs-translation">Back</target>
+      </trans-unit>
+      <trans-unit id="existsEmailError" resname="existsEmailError">
+        <source>Email already exists:</source>
+        <target state="needs-translation">Email already exists:</target>
+      </trans-unit>
+      <trans-unit id="notExistsEmailError" resname="notExistsEmailError">
+        <source>This email does not exist :</source>
+        <target state="needs-translation">This email does not exist :</target>
+      </trans-unit>
+      <trans-unit id="emailSubjectAddUser" resname="emailSubjectAddUser">
+        <source>Confirm your subscription, please.</source>
+        <target state="needs-translation">Confirm your subscription, please.</target>
+      </trans-unit>
+      <trans-unit id="emailSubjectUpdateUser" resname="emailSubjectUpdateUser">
+        <source>Update your subscription.</source>
+        <target state="needs-translation">Update your subscription.</target>
+      </trans-unit>
+      <trans-unit id="updateButton" resname="updateButton">
+        <source>Update</source>
+        <target state="needs-translation">Update</target>
+      </trans-unit>
+      <trans-unit id="yesButton" resname="yesButton">
+        <source>Yes</source>
+        <target state="needs-translation">Yes</target>
+      </trans-unit>
+      <trans-unit id="noButton" resname="noButton">
+        <source>No</source>
+        <target state="needs-translation">No</target>
+      </trans-unit>
+      <trans-unit id="subscriptionConfirmed" resname="subscriptionConfirmed">
+        <source>Your subscription is confirmed.</source>
+        <target state="needs-translation">Your subscription is confirmed.</target>
+      </trans-unit>
+      <trans-unit id="subscriptionHello" resname="subscriptionHello">
+        <source>Hello</source>
+        <target state="needs-translation">Hello</target>
+      </trans-unit>
+      <trans-unit id="subscriptionText1" resname="subscriptionText1">
+        <source>You will receive our next newsletter.</source>
+        <target state="needs-translation">You will receive our next newsletter.</target>
+      </trans-unit>
+      <trans-unit id="subscriptionText2" resname="subscriptionText2">
+        <source>You can edit or delete your subscription at any time :</source>
+        <target state="needs-translation">You can edit or delete your subscription at any time :</target>
+      </trans-unit>
+      <trans-unit id="deleteConfirmation" resname="deleteConfirmation">
+        <source>Are you sure you want to delete your subscription</source>
+        <target state="needs-translation">Are you sure you want to delete your subscription</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
