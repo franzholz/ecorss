@@ -1,152 +1,144 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
-	<file source-language="en" target-language="fr" datatype="plaintext" original="EXT:ecorss/Resources/Private/Language/locallang.xlf" date="2024-03-13T13:49:48Z" product-name="ecorss">
-		<header/>
-		<body>
-			<trans-unit id="mvc1_title" resname="mvc1_title"  approved="yes">
-				<source>ecorss</source>
-				<target>ecorss</target>
-			</trans-unit>
-			<trans-unit id="mvc1_plus_wiz_description" resname="mvc1_plus_wiz_description"  approved="yes">
-				<source>ecorss</source>
-				<target>ecorss</target>
-			</trans-unit>
-			<trans-unit id="first_name" resname="first_name"  approved="yes">
-				<source>First name:</source>
-				<target>Prénom :</target>
-			</trans-unit>
-			<trans-unit id="last_name" resname="last_name"  approved="yes">
-				<source>Last name:</source>
-				<target>Nom :</target>
-			</trans-unit>
-			<trans-unit id="email" resname="email"  approved="yes">
-				<source>Email:</source>
-				<target>Email :</target>
-			</trans-unit>
-			<trans-unit id="sendButton" resname="sendButton"  approved="yes">
-				<source>Send</source>
-				<target>Envoyer</target>
-			</trans-unit>
-			<trans-unit id="resetButton" resname="resetButton"  approved="yes">
-				<source>Reset</source>
-				<target>Annuler</target>
-			</trans-unit>
-			<trans-unit id="addAddress" resname="addAddress"  approved="yes">
-				<source>Add a new address:</source>
-				<target>Ajouter une nouvelle adresse</target>
-			</trans-unit>
-			<trans-unit id="updateAddress" resname="updateAddress"  approved="yes">
-				<source>Update / delete an address:</source>
-				<target>Modifier / Supprimer une adresse</target>
-			</trans-unit>
-			<trans-unit id="insertEmail" resname="insertEmail"  approved="yes">
-				<source>Insert your email, please:</source>
-				<target>Veuillez saisir votre adresse email :</target>
-			</trans-unit>
-			<trans-unit id="confirmEmail" resname="confirmEmail"  approved="yes">
-				<source>Un email de confirmation vient de vous être envoyé.</source>
-				<target>Un email de confirmation vient de vous être envoyé.</target>
-			</trans-unit>
-			<trans-unit id="emptyFirstNameError" resname="emptyFirstNameError"  approved="yes">
-				<source>First name&#039;s value is empty :</source>
-				<target>Veuillez saisir votre prénom :</target>
-			</trans-unit>
-			<trans-unit id="emptyLastNameError" resname="emptyLastNameError"  approved="yes">
-				<source>Last name&#039;s value is empty :</source>
-				<target>Veuillez saisir votre nom :</target>
-			</trans-unit>
-			<trans-unit id="emptyEmailError" resname="emptyEmailError"  approved="yes">
-				<source>Email&#039;s value empty :</source>
-				<target>Veuillez saisir un email :</target>
-			</trans-unit>
-			<trans-unit id="formError" resname="formError"  approved="yes">
-				<source>More informations needed</source>
-				<target>Données saisies incomplètes.</target>
-			</trans-unit>
-			<trans-unit id="invalidEmailError" resname="invalidEmailError"  approved="yes">
-				<source>Email format invalid :</source>
-				<target>Adresse email invalide :</target>
-			</trans-unit>
-			<trans-unit id="formOK1" resname="formOK1"  approved="yes">
-				<source>We receive your subscription successfuly.</source>
-				<target>Votre inscription nous est bien parvenue.</target>
-			</trans-unit>
-			<trans-unit id="formOK2" resname="formOK2"  approved="yes">
-				<source>An email has been sent</source>
-				<target>Un email de confirmation vient de vous être envoyé.</target>
-			</trans-unit>
-			<trans-unit id="formOK3" resname="formOK3"  approved="yes">
-				<source>Please, read the email in order to confirm your subscription.</source>
-				<target>Veuillez en prendre connaissance pour finaliser votre inscription.</target>
-			</trans-unit>
-			<trans-unit id="formUpdateUserOK1" resname="formUpdateUserOK1"  approved="yes">
-				<source>An email has been sent.</source>
-				<target>Un email vient de vous être envoyé.</target>
-			</trans-unit>
-			<trans-unit id="formUpdateUserOK2" resname="formUpdateUserOK2"  approved="yes">
-				<source>Please, read it and follow the instructions.</source>
-				<target>Veuillez en prendre connaissance et suivre les indications pour modifier votre inscription.</target>
-			</trans-unit>
-			<trans-unit id="backButton" resname="backButton"  approved="yes">
-				<source>Back</source>
-				<target>Retour</target>
-			</trans-unit>
-			<trans-unit id="existsEmailError" resname="existsEmailError"  approved="yes">
-				<source>Email already exists:</source>
-				<target>Email déjà inscrit :</target>
-			</trans-unit>
-			<trans-unit id="notExistsEmailError" resname="notExistsEmailError"  approved="yes">
-				<source>This email does not exist :</source>
-				<target>Cet adresse email n&#039;est pas enregistré :</target>
-			</trans-unit>
-			<trans-unit id="emailSubjectAddUser" resname="emailSubjectAddUser"  approved="yes">
-				<source>Confirm your subscription, please.</source>
-				<target>Veuillez confirmer votre inscription à la newsletter.</target>
-			</trans-unit>
-			<trans-unit id="emailSubjectUpdateUser" resname="emailSubjectUpdateUser"  approved="yes">
-				<source>Update your subscription.</source>
-				<target>Modifier votre inscription à la newsletter.</target>
-			</trans-unit>
-			<trans-unit id="updateButton" resname="updateButton"  approved="yes">
-				<source>Update</source>
-				<target>Mettre à jour</target>
-			</trans-unit>
-			<trans-unit id="yesButton" resname="yesButton"  approved="yes">
-				<source>Yes</source>
-				<target>Oui</target>
-			</trans-unit>
-			<trans-unit id="noButton" resname="noButton"  approved="yes">
-				<source>No</source>
-				<target>Non</target>
-			</trans-unit>
-			<trans-unit id="subscriptionConfirmed" resname="subscriptionConfirmed"  approved="yes">
-				<source>Your subscription is confirmed.</source>
-				<target>Votre inscription est à présent confirmée.</target>
-			</trans-unit>
-			<trans-unit id="subscriptionHello" resname="subscriptionHello"  approved="yes">
-				<source>Hello</source>
-				<target>Bonjour,</target>
-			</trans-unit>
-			<trans-unit id="subscriptionText1" resname="subscriptionText1"  approved="yes">
-				<source>You will receive our next newsletter.</source>
-				<target>Vous recevrez de nos nouvelles dans notre prochaine newsletter.</target>
-			</trans-unit>
-			<trans-unit id="subscriptionText2" resname="subscriptionText2"  approved="yes">
-				<source>You can edit or delete your subscription at any time :</source>
-				<target>Vous pouvez, en tout temps, mettre à jour vos coordonnées ou résilier votre abonnement :</target>
-			</trans-unit>
-			<trans-unit id="deleteConfirmation" resname="deleteConfirmation"  approved="yes">
-				<source>Are you sure you want to delete your subscription</source>
-				<target>Etes-vous certain de vouloir supprimer votre inscription ?</target>
-			</trans-unit>
-			<trans-unit id="subscriptionToConfirm" resname="subscriptionToConfirm"  approved="yes">
-				<source>Inscription à confirmer par email.</source>
-				<target>Inscription à confirmer par email.</target>
-			</trans-unit>
-			<trans-unit id="deleteButton" resname="deleteButton"  approved="yes">
-				<source>Supprimer</source>
-				<target>Supprimer</target>
-			</trans-unit>
-		</body>
-	</file>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="en" datatype="plaintext" original="EXT:ecorss/Resources/Private/Language/locallang.xlf" date="2024-03-13T13:49:48Z" product-name="ecorss" target-language="fr">
+    <header/>
+    <body>
+      <trans-unit id="mvc1_title" resname="mvc1_title">
+        <source>ecorss</source>
+        <target state="needs-translation">ecorss</target>
+      </trans-unit>
+      <trans-unit id="mvc1_plus_wiz_description" resname="mvc1_plus_wiz_description">
+        <source>ecorss</source>
+        <target state="needs-translation">ecorss</target>
+      </trans-unit>
+      <trans-unit id="first_name" resname="first_name" approved="yes">
+        <source>First name:</source>
+        <target state="final">Prénom :</target>
+      </trans-unit>
+      <trans-unit id="last_name" resname="last_name" approved="yes">
+        <source>Last name:</source>
+        <target state="final">Nom :</target>
+      </trans-unit>
+      <trans-unit id="email" resname="email" approved="yes">
+        <source>Email:</source>
+        <target state="final">Email :</target>
+      </trans-unit>
+      <trans-unit id="sendButton" resname="sendButton" approved="yes">
+        <source>Send</source>
+        <target state="final">Envoyer</target>
+      </trans-unit>
+      <trans-unit id="resetButton" resname="resetButton" approved="yes">
+        <source>Reset</source>
+        <target state="final">Annuler</target>
+      </trans-unit>
+      <trans-unit id="addAddress" resname="addAddress" approved="yes">
+        <source>Add a new address:</source>
+        <target state="final">Ajouter une nouvelle adresse</target>
+      </trans-unit>
+      <trans-unit id="updateAddress" resname="updateAddress" approved="yes">
+        <source>Update / delete an address:</source>
+        <target state="final">Modifier / Supprimer une adresse</target>
+      </trans-unit>
+      <trans-unit id="insertEmail" resname="insertEmail" approved="yes">
+        <source>Insert your email, please:</source>
+        <target state="final">Veuillez saisir votre adresse email :</target>
+      </trans-unit>
+      <trans-unit id="confirmEmail" resname="confirmEmail">
+        <source>Un email de confirmation vient de vous être envoyé.</source>
+        <target state="needs-translation">Un email de confirmation vient de vous être envoyé.</target>
+      </trans-unit>
+      <trans-unit id="emptyFirstNameError" resname="emptyFirstNameError" approved="yes">
+        <source>First name's value is empty :</source>
+        <target state="final">Veuillez saisir votre prénom :</target>
+      </trans-unit>
+      <trans-unit id="emptyLastNameError" resname="emptyLastNameError" approved="yes">
+        <source>Last name's value is empty :</source>
+        <target state="final">Veuillez saisir votre nom :</target>
+      </trans-unit>
+      <trans-unit id="emptyEmailError" resname="emptyEmailError" approved="yes">
+        <source>Email's value empty :</source>
+        <target state="final">Veuillez saisir un email :</target>
+      </trans-unit>
+      <trans-unit id="formError" resname="formError" approved="yes">
+        <source>More informations needed</source>
+        <target state="final">Données saisies incomplètes.</target>
+      </trans-unit>
+      <trans-unit id="invalidEmailError" resname="invalidEmailError" approved="yes">
+        <source>Email format invalid :</source>
+        <target state="final">Adresse email invalide :</target>
+      </trans-unit>
+      <trans-unit id="formOK1" resname="formOK1" approved="yes">
+        <source>We receive your subscription successfuly.</source>
+        <target state="final">Votre inscription nous est bien parvenue.</target>
+      </trans-unit>
+      <trans-unit id="formOK2" resname="formOK2" approved="yes">
+        <source>An email has been sent</source>
+        <target state="final">Un email de confirmation vient de vous être envoyé.</target>
+      </trans-unit>
+      <trans-unit id="formOK3" resname="formOK3" approved="yes">
+        <source>Please, read the email in order to confirm your subscription.</source>
+        <target state="final">Veuillez en prendre connaissance pour finaliser votre inscription.</target>
+      </trans-unit>
+      <trans-unit id="formUpdateUserOK1" resname="formUpdateUserOK1" approved="yes">
+        <source>An email has been sent.</source>
+        <target state="final">Un email vient de vous être envoyé.</target>
+      </trans-unit>
+      <trans-unit id="formUpdateUserOK2" resname="formUpdateUserOK2" approved="yes">
+        <source>Please, read it and follow the instructions.</source>
+        <target state="final">Veuillez en prendre connaissance et suivre les indications pour modifier votre inscription.</target>
+      </trans-unit>
+      <trans-unit id="backButton" resname="backButton" approved="yes">
+        <source>Back</source>
+        <target state="final">Retour</target>
+      </trans-unit>
+      <trans-unit id="existsEmailError" resname="existsEmailError" approved="yes">
+        <source>Email already exists:</source>
+        <target state="final">Email déjà inscrit :</target>
+      </trans-unit>
+      <trans-unit id="notExistsEmailError" resname="notExistsEmailError" approved="yes">
+        <source>This email does not exist :</source>
+        <target state="final">Cet adresse email n'est pas enregistré :</target>
+      </trans-unit>
+      <trans-unit id="emailSubjectAddUser" resname="emailSubjectAddUser" approved="yes">
+        <source>Confirm your subscription, please.</source>
+        <target state="final">Veuillez confirmer votre inscription à la newsletter.</target>
+      </trans-unit>
+      <trans-unit id="emailSubjectUpdateUser" resname="emailSubjectUpdateUser" approved="yes">
+        <source>Update your subscription.</source>
+        <target state="final">Modifier votre inscription à la newsletter.</target>
+      </trans-unit>
+      <trans-unit id="updateButton" resname="updateButton" approved="yes">
+        <source>Update</source>
+        <target state="final">Mettre à jour</target>
+      </trans-unit>
+      <trans-unit id="yesButton" resname="yesButton" approved="yes">
+        <source>Yes</source>
+        <target state="final">Oui</target>
+      </trans-unit>
+      <trans-unit id="noButton" resname="noButton" approved="yes">
+        <source>No</source>
+        <target state="final">Non</target>
+      </trans-unit>
+      <trans-unit id="subscriptionConfirmed" resname="subscriptionConfirmed" approved="yes">
+        <source>Your subscription is confirmed.</source>
+        <target state="final">Votre inscription est à présent confirmée.</target>
+      </trans-unit>
+      <trans-unit id="subscriptionHello" resname="subscriptionHello" approved="yes">
+        <source>Hello</source>
+        <target state="final">Bonjour,</target>
+      </trans-unit>
+      <trans-unit id="subscriptionText1" resname="subscriptionText1" approved="yes">
+        <source>You will receive our next newsletter.</source>
+        <target state="final">Vous recevrez de nos nouvelles dans notre prochaine newsletter.</target>
+      </trans-unit>
+      <trans-unit id="subscriptionText2" resname="subscriptionText2" approved="yes">
+        <source>You can edit or delete your subscription at any time :</source>
+        <target state="final">Vous pouvez, en tout temps, mettre à jour vos coordonnées ou résilier votre abonnement :</target>
+      </trans-unit>
+      <trans-unit id="deleteConfirmation" resname="deleteConfirmation" approved="yes">
+        <source>Are you sure you want to delete your subscription</source>
+        <target state="final">Etes-vous certain de vouloir supprimer votre inscription ?</target>
+      </trans-unit>
+    </body>
+  </file>
 </xliff>
