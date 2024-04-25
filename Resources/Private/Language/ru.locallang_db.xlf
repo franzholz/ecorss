@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
-  <file source-language="en" datatype="plaintext" original="EXT:ecorss/Resources/Private/Language/locallang.xlf" date="2024-03-13T13:49:57Z" product-name="ecorss" target-language="ru">
+  <file source-language="en" datatype="plaintext" original="EXT:ecorss/Resources/Private/Language/locallang_db.xlf" date="2024-03-13T13:49:57Z" product-name="ecorss" target-language="ru">
     <header/>
     <body>
       <trans-unit id="tt_content.list_type_pi1" resname="tt_content.list_type_pi1">
