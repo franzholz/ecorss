@@ -4,20 +4,23 @@ temp.tx_ecorss{
 	atomTemplate = atom.php
 	rssTemplate = rss.php
 	dateFormat = %Y-%m-%dT%H:%M:%S%z
-	title = {$plugin.tx_ecorss.title} 
+	title = {$plugin.tx_ecorss.title}
 	subtitle = {$plugin.tx_ecorss.subtitle}
 	feed = {$plugin.tx_ecorss.feed}
 }
 
 
 ######### PLUGIN BOX #########
-plugin.tx_ecorss.controller.feed = USER_INT
-plugin.tx_ecorss.controller.feed.userFunc = JambageCom\Ecorss\Controller\FeedController->main
-plugin.tx_ecorss.controller.feed.configurations < temp.tx_ecorss
-plugin.tx_ecorss.controller.feed.configurations.parseFunc < lib.parseFunc
+plugin.tx_ecorss {
+  controller.feed = USER_INT
+  controller.feed {
+    userFunc = JambageCom\Ecorss\Controller\FeedController->main
+    configurations < temp.tx_ecorss
+    configurations.parseFunc < lib.parseFunc
+}
 
 
-// We handle the plugin configurations to the box configurations 
+// We handle the plugin configurations to the box configurations
 tt_content.list.20.tx_ecorss_controllers_feed =< plugin.tx_ecorss.controller.feed
 
 

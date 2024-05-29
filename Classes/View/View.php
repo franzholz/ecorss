@@ -35,11 +35,13 @@ namespace JambageCom\Ecorss\View;
 
 use Symfony\Component\Mime\MimeTypes;
 
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use JambageCom\Ecorss\Api\FeedApi;
-
 
 use JambageCom\Div2007\Utility\FrontendUtility;
+
+use JambageCom\Ecorss\Api\FeedApi;
+
 
 class View implements \TYPO3\CMS\Core\SingletonInterface {
     public $entries;
@@ -83,9 +85,9 @@ class View implements \TYPO3\CMS\Core\SingletonInterface {
                 if (!empty($matches)) {
                     $elements = $matches[1];
                     if (!empty($elements)) {
-                        $imageUrl = $elements['0'];
+                        $imageUrl = $elements[0];
                         if ($imageUrl != '') {
-                            $imagePath = PATH_site . str_replace($data['host'], '', $imageUrl);
+                            $imagePath = Environment::getPublicPath() . '/' . str_replace($data['host'], '', $imageUrl);
                             $ext = pathinfo($imagePath, PATHINFO_EXTENSION);
                             $bytes = filesize($imagePath);
                             $contentType = self::$mimeTypes->getMimeTypes($ext[0]);

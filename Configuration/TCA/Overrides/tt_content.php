@@ -16,7 +16,10 @@ call_user_func(function ($extensionKey, $table): void {
     ];
     $columns = array_keys($temporaryColumns);
 
-    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns($table, $temporaryColumns);
+    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns(
+        $table,
+        $temporaryColumns
+    );
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes(
         $table,
         implode(',', $columns),
@@ -31,7 +34,7 @@ call_user_func(function ($extensionKey, $table): void {
         [
             'LLL:EXT:' . $extensionKey . $languageSubpath . 'locallang_db.xlf:tt_content.list_type_pi1',
             $listType,
-            'EXT:' . $extensionKey . '/ext_icon.gif'
+            'EXT:' . $extensionKey . '/Resources/Pubilc/Icons/Extension.gif'
         ],
         'list_type',
         $extensionKey

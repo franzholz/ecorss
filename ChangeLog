@@ -1,9 +1,13 @@
+2024-05-29  Franz Holzinger  <franz@ttproducts.de>
+    * Deprecation no. 88366: Default caching framework cache names changed
+    * Deprecation no. 85285: Deprecated path related constants
+
 2021-03-26 Franz Holzinger <franz@ttproducts.de>
     * compatibility TYPO3 10: replace GeneralUtility::getIndpEnv by pendants from $GLOBALS['TYPO3_REQUEST']->getAttribute('normalizedParams').
 
 2021-03-26 Franz Holzinger <franz@ttproducts.de>
     * new feature additional parameter: single_page.linkParam = no_cache=1. no_cache is not added automatically any more. You can build your extension based on USER_INT.
-    
+
 2021-03-24 Franz Holzinger <franz@ttproducts.de>
     * new feature image: A FAL record o an image is included as enclosure in the RSS feed.
 

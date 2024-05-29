@@ -84,7 +84,7 @@ class FeedController {
 					$htmlHeader .= '<link rel="alternate" type="' . $feed . '" title="' . $title . '" href="' . $feedURL . '" />' . chr(10);
 				} else {
                     throw new \RuntimeException(
-'<div style="color:red"><b>plugin ecorss error</b>Parameter typeNum is missing in TypoScript. Try something like this in setup: page.headerData.xxx.myFeed.typeNum = yyy'.'</div>');
+'<div style="color:red"><b>plugin ecorss error</b>Parameter typeNum is missing in TypoScript for "page". Try something like this in setup: page.headerData.xxx.myFeed.typeNum = yyy'.'</div>');
                 }
 			}
 		}
@@ -112,7 +112,7 @@ class FeedController {
 		$TSconfig = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_ecorss.']['controller.']['feed.'];
 
 		if($TSconfig === null){
-			throw new \RuntimeException('<h1>Ecorss</h1> You forgot to include the static template "ecorss" in your root template in onglet "Includes"');
+			throw new \RuntimeException('<h1>Ecorss</h1> You forgot to include the static template "EcoRSS: rss services (ecorss)" in your root template in onglet "Includes"');
 		}
 		$TSconfig['configurations.'] = array_merge($TSconfig['configurations.'], $configurations);
 		$content = $this->main(null, $TSconfig);
@@ -136,7 +136,7 @@ class FeedController {
 		$output = '';
 
 		// Cache mechanism
-        $cacheFrontend = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Cache\CacheManager::class)->getCache('cache_hash');
+        $cacheFrontend = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Cache\CacheManager::class)->getCache('hash');
         $normalizedParams = $GLOBALS['TYPO3_REQUEST']->getAttribute('normalizedParams');
 
 		$hash = md5(serialize($configurations) . $GLOBALS['TSFE']->type);
@@ -165,8 +165,8 @@ class FeedController {
             $data = [];
             $data['title'] = $configurations['title'];
             $data['subtitle'] = $configurations['subtitle'];
-            $data['lang'] = isset($configurations['lang']) ? $configurations['lang'] : 'en-GB';
-            $data['host'] = isset($configurations['host']) ? $configurations['host'] : $normalizedParams->getSiteUrl(); //    GeneralUtility::getIndpEnv('TYPO3_SITE_URL')
+            $data['lang'] = isset($configurations['lang']) ? $configurations['lang'] : 'de-DE';
+            $data['host'] = isset($configurations['host']) ? $configurations['host'] : $normalizedParams->getSiteUrl();
 
             // Sanitize the host's value
             if (
@@ -189,7 +189,7 @@ class FeedController {
                 \JambageCom\Ecorss\View\View::class,
                 $entries,
                 $data,
-                (isset($configurations['parseFunc.']) ? $configurations['parseFunc.'] : $configurations['parseFunc'])
+                ($configurations['parseFunc.'] ?? $configurations['parseFunc'])
             );
             $template = '';
             $pathTemplateDirectory = $configurations['pathToTemplateDirectory'];
